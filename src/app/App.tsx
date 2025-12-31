@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { OnboardingPage } from '@/pages/auth/OnboardingPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
+import { BrokerLoginPage } from '@/pages/auth/BrokerLoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { PropertiesPage } from '@/pages/properties/PropertiesPage';
 import { PropertyDetailPage } from '@/pages/properties/PropertyDetailPage';
@@ -24,13 +25,14 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 export function App() {
   return (
     <Routes>
-      <Route element={<AppLayout />}>
-        {/* Public Routes */}
-        <Route path="/" element={<OnboardingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+      {/* Public Routes - Without Layout */}
+      <Route path="/" element={<OnboardingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/broker-login" element={<BrokerLoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
-        {/* Private Routes */}
+      {/* Private Routes - With Layout */}
+      <Route element={<AppLayout />}>
         <Route
           path="/properties"
           element={
