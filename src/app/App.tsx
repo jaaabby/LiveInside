@@ -7,6 +7,7 @@ import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { PropertiesPage } from '@/pages/properties/PropertiesPage';
 import { PropertyDetailPage } from '@/pages/properties/PropertyDetailPage';
 import { NewPropertyPage } from '@/pages/properties/NewPropertyPage';
+import { VirtualTourPage } from '@/pages/properties/VirtualTourPage';
 import { CatalogsPage } from '@/pages/catalogs/CatalogsPage';
 import { CatalogDetailPage } from '@/pages/catalogs/CatalogDetailPage';
 import { CartPage } from '@/pages/cart/CartPage';
@@ -54,6 +55,14 @@ export function App() {
           element={
             <PrivateRoute>
               <PropertyDetailPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/properties/:id/virtual-tour"
+          element={
+            <PrivateRoute>
+              <VirtualTourPage />
             </PrivateRoute>
           }
         />
