@@ -51,7 +51,7 @@ export function PropertyDetailPage() {
 
       {/* Desktop Header */}
       <div className="hidden md:block">
-        <TopBar title={property.name} showBack />
+        <TopBar title={property.name} />
       </div>
 
       {!showViewer ? (
@@ -166,7 +166,7 @@ export function PropertyDetailPage() {
   );
 }
 
-function ARViewer({ propertyId, onClose }: { propertyId: string; onClose: () => void }) {
+function ARViewer({ onClose }: { propertyId: string; onClose: () => void }) {
   const navigate = useNavigate();
 
   return (

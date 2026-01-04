@@ -51,12 +51,6 @@ export const availableFurniture: CustomFurniture[] = [
     icon: '💡'
   },
   {
-    id: 'lampara-stormtrooper',
-    name: 'Lámpara Stormtrooper',
-    path: '/models/furniture/lampara_stormtrooper.glb',
-    icon: '⚡'
-  },
-  {
     id: 'planta',
     name: 'Planta',
     path: '/models/furniture/planta.glb',
@@ -79,12 +73,6 @@ export const availableFurniture: CustomFurniture[] = [
     name: 'Taburete',
     path: '/models/furniture/taburete.glb',
     icon: '🪑'
-  },
-  {
-    id: 'velador',
-    name: 'Velador',
-    path: '/models/furniture/velador.glb',
-    icon: '🕯️'
   },
   {
     id: 'bobesponja-peluche',

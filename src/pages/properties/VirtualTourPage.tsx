@@ -22,52 +22,32 @@ export function VirtualTourPage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#0A0E27] via-[#0A0E27] to-[#1a1f3f] overflow-hidden">
-      {/* Gradient effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-radial from-[#4C6FFF]/15 via-transparent to-transparent opacity-50 animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-radial from-[#00D4AA]/10 via-transparent to-transparent opacity-50" />
-      </div>
-
+    <div className="fixed inset-0 bg-gray-50 overflow-hidden">
       {/* Header */}
-      <header className="relative z-10 bg-[#151B3D]/60 backdrop-blur-xl border-b border-[#2D3561]">
+      <header className="relative z-10 bg-primary-600 shadow-md">
         <div className="px-6 py-4 flex items-center justify-between">
           {/* Left: Back button and Logo */}
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate(`/properties/${id}`)}
-              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
               <span className="text-sm font-medium">Volver</span>
             </button>
             
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#4C6FFF] to-[#00D4AA] rounded-lg flex items-center justify-center">
-                <span className="text-2xl">🏠</span>
-              </div>
-              <div>
-                <div className="text-xl font-bold bg-gradient-to-r from-[#4C6FFF] to-[#00D4AA] bg-clip-text text-transparent">
-                  LiveInside
-                </div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">
-                  Staging Virtual con Habitación Real
-                </div>
-              </div>
+              <img
+                src="/src/assets/images/logo_blanco_horizontal.png"
+                alt="LiveInside"
+                className="h-8"
+              />
             </div>
           </div>
 
           {/* Center: Title */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h1 className="text-2xl font-bold text-white">Tour Virtual</h1>
-          </div>
-
-          {/* Right: Badge */}
-          <div className="flex items-center gap-3 bg-[#00D4AA]/20 border border-[#00D4AA] px-4 py-2 rounded-full">
-            <span className="text-[#00D4AA]">✨</span>
-            <span className="text-sm font-semibold text-[#00D4AA]">
-              Habitación capturada con Polycam
-            </span>
+            <h1 className="text-2xl font-bold text-white">Visor 3D</h1>
           </div>
         </div>
       </header>
@@ -91,7 +71,7 @@ export function VirtualTourPage() {
         />
 
         {/* 3D Viewer */}
-        <div className="flex-1 bg-[#151B3D]/40 backdrop-blur-xl border border-[#2D3561] rounded-2xl overflow-hidden relative">
+        <div className="flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden relative shadow-sm">
           <ThreeScene
             ref={threeSceneRef}
             selectedFurniture={selectedFurniture}
@@ -99,21 +79,21 @@ export function VirtualTourPage() {
           />
           
           {/* Overlay badge */}
-          <div className="absolute top-4 left-4 bg-[#0A0E27]/80 backdrop-blur-md px-4 py-2 rounded-lg border border-[#2D3561]">
-            <span className="text-sm font-mono text-[#00D4AA]">� Vista 3D Activa</span>
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+            <span className="text-sm font-medium text-primary-600">🎨 Vista 3D Activa</span>
           </div>
 
           {/* Instructions */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-[#0A0E27]/90 backdrop-blur-md px-6 py-3 rounded-xl border border-[#2D3561]">
-            <p className="text-xs text-gray-400 text-center leading-relaxed">
-              <span className="text-[#00D4AA] font-semibold">🖱️ Click + arrastrar:</span> Rotar cámara | 
-              <span className="text-[#00D4AA] font-semibold">🔍 Rueda:</span> Zoom | 
-              <span className="text-[#00D4AA] font-semibold">📦 Click mueble:</span> Seleccionar
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm px-6 py-3 rounded-xl border border-gray-200 shadow-lg max-w-3xl">
+            <p className="text-xs text-gray-600 text-center leading-relaxed">
+              <span className="text-primary-600 font-semibold">🖱️ Click + arrastrar:</span> Rotar cámara | 
+              <span className="text-primary-600 font-semibold"> 🔍 Rueda:</span> Zoom | 
+              <span className="text-primary-600 font-semibold"> 📦 Click mueble:</span> Seleccionar
               <br />
-              <span className="text-[#4C6FFF] font-semibold">⌨️ W/A/S/D o Flechas:</span> Mover | 
-              <span className="text-[#4C6FFF] font-semibold">Q/E:</span> Rotar | 
-              <span className="text-[#4C6FFF] font-semibold">+/-:</span> Escalar | 
-              <span className="text-[#FF4C6F] font-semibold">Delete:</span> Eliminar
+              <span className="text-primary-700 font-semibold">⌨️ W/A/S/D o Flechas:</span> Mover | 
+              <span className="text-primary-700 font-semibold"> Q/E:</span> Rotar | 
+              <span className="text-primary-700 font-semibold"> +/-:</span> Escalar | 
+              <span className="text-red-600 font-semibold"> Delete:</span> Eliminar
             </p>
           </div>
         </div>
