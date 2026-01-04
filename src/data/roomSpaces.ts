@@ -9,14 +9,16 @@ export interface RoomSpace {
 // Esta lista será reemplazada por un escaneo dinámico de la carpeta
 export const availableRooms: RoomSpace[] = [
   {
-    id: 'room-scan',
-    name: 'Espacio 1',
-    path: '/models/rooms/room-scan.glb',
+    id: 'room-scan1',
+    name: 'Sala de estar',
+    path: '/models/rooms/room-scan1.glb',
+    thumbnail: '/models/rooms/Sala de estar.jpeg',
   },
   {
-    id: 'room-scan1',
-    name: 'Espacio 2',
-    path: '/models/rooms/room-scan1.glb',
+    id: '04-01-2026',
+    name: 'Habitación',
+    path: '/models/rooms/04-01-2026.glb',
+    thumbnail: '/models/rooms/Habitación.jpeg',
   },
 ];
 

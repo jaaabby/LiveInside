@@ -357,7 +357,7 @@ export const mockPlans: Plan[] = [
   {
     id: '1',
     name: 'Plan Starter',
-    price: 149000,
+    price: 999000,
     currency: 'CLP',
     features: [
       '10 Espacios activos',
@@ -370,7 +370,7 @@ export const mockPlans: Plan[] = [
   {
     id: '2',
     name: 'Plan Pro',
-    price: 499000,
+    price: 1433000,
     currency: 'CLP',
     features: [
       'Todo lo que se incluye en Starter',
@@ -383,7 +383,7 @@ export const mockPlans: Plan[] = [
   {
     id: '3',
     name: 'Plan Bussiness',
-    price: 1490000,
+    price: 1999000,
     currency: 'CLP',
     features: [
       'Todo lo que se incluye en Pro',

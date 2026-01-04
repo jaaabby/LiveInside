@@ -68,22 +68,26 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
 
   // Helper function: calcular la altura correcta del objeto basado en su geometría
   const calculateObjectBaseHeight = (object: THREE.Group): number => {
-    // Recalcular el bounding box en world space
+    // Guardar la posición original
+    const originalY = object.position.y;
+    
+    // Temporalmente colocar en Y=0 para calcular correctamente
+    object.position.y = 0;
     object.updateMatrixWorld(true);
+    
     const box = new THREE.Box3().setFromObject(object);
-    const size = box.getSize(new THREE.Vector3());
     
-    // La altura desde el punto de pivote (position.y) hasta la base del objeto
+    // Restaurar posición original
+    object.position.y = originalY;
+    object.updateMatrixWorld(true);
+    
+    // La altura desde Y=0 hasta la base del objeto
+    // Si bottomY es negativo, significa que la base está por debajo del origen
+    // Si es positivo, está por encima
     const bottomY = box.min.y;
-    const objectY = object.position.y;
     
-    // Si el objeto ya tiene posición Y, calcular offset desde ahí
-    // Si no, usar la mitad de la altura
-    if (objectY !== 0) {
-      return objectY - bottomY;
-    }
-    
-    return size.y / 2;
+    // Retornar la distancia absoluta para elevar el objeto
+    return Math.abs(bottomY);
   };
 
   // Helper function: posicionar objeto sobre una superficie con raycast
@@ -110,32 +114,30 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
       for (const offset of checkPoints) {
         const testX = position.x + offset.x;
         const testZ = position.z + offset.z;
-        // Raycast desde muy arriba (20m sobre el nivel del suelo)
-        const rayOrigin = new THREE.Vector3(testX, roomFloorYRef.current + 20, testZ);
+        // Raycast desde muy arriba (50m sobre el nivel del suelo)
+        const rayOrigin = new THREE.Vector3(testX, roomFloorYRef.current + 50, testZ);
         const rayDirection = new THREE.Vector3(0, -1, 0);
         raycaster.set(rayOrigin, rayDirection);
 
+        // Solo intersectar con el modelo de la habitación, no con muebles colocados
         const intersects = raycaster.intersectObject(roomModelRef.current, true);
         
         if (intersects.length > 0) {
-          // Tomar la PRIMERA intersección (la superficie más alta en ese punto)
-          // Esto permite colocar objetos sobre muebles existentes en la habitación escaneada
-          const firstHit = intersects[0];
-          
-          // Verificar que la normal de la superficie apunte hacia arriba
-          // (para evitar paredes o superficies verticales)
-          if (firstHit.face) {
-            const normal = firstHit.face.normal.clone();
-            // Transformar la normal al espacio mundial
-            const worldNormal = normal.transformDirection(firstHit.object.matrixWorld);
-            
-            // Si la normal apunta mayormente hacia arriba (Y > 0.5 significa ángulo < 60°)
-            if (worldNormal.y > 0.5) {
-              surfaceHeights.push(firstHit.point.y);
+          // Revisar todas las intersecciones para encontrar la superficie horizontal más alta
+          for (const hit of intersects) {
+            // Verificar que la normal de la superficie apunte hacia arriba
+            if (hit.face) {
+              const normal = hit.face.normal.clone();
+              // Transformar la normal al espacio mundial
+              const worldNormal = normal.transformDirection(hit.object.matrixWorld);
+              
+              // Si la normal apunta mayormente hacia arriba (Y > 0.7 significa ángulo < 45°)
+              // Y está por encima del nivel actual del suelo
+              if (worldNormal.y > 0.7 && hit.point.y >= surfaceY) {
+                surfaceHeights.push(hit.point.y);
+                break; // Tomar solo la primera superficie horizontal válida
+              }
             }
-          } else {
-            // Si no hay información de normal, asumir que es válida
-            surfaceHeights.push(intersects[0].point.y);
           }
         }
       }
@@ -707,18 +709,22 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         case 'arrowup':
         case 'w':
           furniture.position.z -= moveStep;
+          placeObjectOnSurface(furniture, furniture.position);
           break;
         case 'arrowdown':
         case 's':
           furniture.position.z += moveStep;
+          placeObjectOnSurface(furniture, furniture.position);
           break;
         case 'arrowleft':
         case 'a':
           furniture.position.x -= moveStep;
+          placeObjectOnSurface(furniture, furniture.position);
           break;
         case 'arrowright':
         case 'd':
           furniture.position.x += moveStep;
+          placeObjectOnSurface(furniture, furniture.position);
           break;
 
         // Rotar con Q/E
