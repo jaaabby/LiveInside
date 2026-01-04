@@ -106,17 +106,6 @@ export const mockCatalogs: Catalog[] = [
 export const mockProducts: Product[] = [
   // Catálogo IKEA (id: '1')
   {
-    id: '1',
-    sku: 'AIRE-001',
-    name: 'Aire Acondicionado',
-    description: 'Sistema de climatización moderno',
-    price: 299990,
-    currency: 'CLP',
-    catalogId: '1',
-    images: ['/models/furniture/IKEA/aire_acondicionado.jpeg'],
-    category: 'Climatización',
-  },
-  {
     id: '2',
     sku: 'BED-001',
     name: 'Cama',
@@ -149,17 +138,6 @@ export const mockProducts: Product[] = [
     images: ['/models/furniture/IKEA/lampara.jpeg'],
     category: 'Iluminación',
   },
-  {
-    id: '5',
-    sku: 'MESA-001',
-    name: 'Mesa de Centro',
-    description: 'Mesa de centro con espacio extra',
-    price: 89990,
-    currency: 'CLP',
-    catalogId: '1',
-    images: ['/models/furniture/IKEA/mesa_centro.jpeg'],
-    category: 'Mesas',
-  },
   
   // Catálogo Sodimac (id: '2')
   {
@@ -183,17 +161,6 @@ export const mockProducts: Product[] = [
     catalogId: '2',
     images: ['/models/furniture/SODIMAC/scandinavian_sofa.jpeg'],
     category: 'Sofás y sillones',
-  },
-  {
-    id: '8',
-    sku: 'TABLE-001',
-    name: 'Mesa y Silla',
-    description: 'Set de mesa y silla',
-    price: 89990,
-    currency: 'CLP',
-    catalogId: '2',
-    images: ['/models/furniture/SODIMAC/table_chair_01.jpeg'],
-    category: 'Sillas y mesas',
   },
   {
     id: '9',
@@ -229,17 +196,6 @@ export const mockProducts: Product[] = [
     catalogId: '3',
     images: ['/models/furniture/CASAIDEAS/Tv.jpeg'],
     category: 'Electrónica',
-  },
-  {
-    id: '12',
-    sku: 'PLANT-001',
-    name: 'Planta de Pared',
-    description: 'Planta decorativa de pared',
-    price: 59990,
-    currency: 'CLP',
-    catalogId: '3',
-    images: ['/models/furniture/CASAIDEAS/wall_plant.jpeg'],
-    category: 'Decoración',
   },
   {
     id: '13',

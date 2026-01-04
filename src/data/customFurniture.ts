@@ -27,14 +27,6 @@ export const furnitureCatalogs: FurnitureCatalog[] = [
 export const availableFurniture: CustomFurniture[] = [
   // Catálogo IKEA
   {
-    id: 'ikea-aire-acondicionado',
-    name: 'Aire Acondicionado',
-    path: '/models/furniture/IKEA/aire_acondicionado.glb',
-    image: '/models/furniture/IKEA/aire_acondicionado.jpeg',
-    icon: '❄️',
-    catalog: 'ikea'
-  },
-  {
     id: 'ikea-bed',
     name: 'Cama',
     path: '/models/furniture/IKEA/bed.glb',
@@ -58,14 +50,6 @@ export const availableFurniture: CustomFurniture[] = [
     icon: '💡',
     catalog: 'ikea'
   },
-  {
-    id: 'ikea-mesa-centro',
-    name: 'Mesa de Centro',
-    path: '/models/furniture/IKEA/mesa_centro.glb',
-    image: '/models/furniture/IKEA/mesa_centro.jpeg',
-    icon: '🪑',
-    catalog: 'ikea'
-  },
   
   // Catálogo Sodimac
   {
@@ -82,14 +66,6 @@ export const availableFurniture: CustomFurniture[] = [
     path: '/models/furniture/SODIMAC/scandinavian_sofa.glb',
     image: '/models/furniture/SODIMAC/scandinavian_sofa.jpeg',
     icon: '🛋️',
-    catalog: 'sodimac'
-  },
-  {
-    id: 'sodimac-table-chair',
-    name: 'Mesa y Silla',
-    path: '/models/furniture/SODIMAC/table_chair_01.glb',
-    image: '/models/furniture/SODIMAC/table_chair_01.jpeg',
-    icon: '🪑',
     catalog: 'sodimac'
   },
   {
@@ -116,14 +92,6 @@ export const availableFurniture: CustomFurniture[] = [
     path: '/models/furniture/CASAIDEAS/Tv.glb',
     image: '/models/furniture/CASAIDEAS/Tv.jpeg',
     icon: '📺',
-    catalog: 'casaideas'
-  },
-  {
-    id: 'casaideas-wall-plant',
-    name: 'Planta de Pared',
-    path: '/models/furniture/CASAIDEAS/wall_plant.glb',
-    image: '/models/furniture/CASAIDEAS/wall_plant.jpeg',
-    icon: '🪴',
     catalog: 'casaideas'
   },
   {

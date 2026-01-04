@@ -5,6 +5,7 @@ import { LoadingPage } from '@/components/ui/Loading';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/services/api';
 import { formatCurrency, formatDate } from '@/utils/helpers';
+import { generateQuotePDF } from '@/utils/pdfGenerator';
 import type { Quote } from '@/types';
 
 export function QuotesPage() {
@@ -22,6 +23,10 @@ export function QuotesPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDownloadPDF = async (quote: Quote) => {
+    await generateQuotePDF(quote);
   };
 
   if (isLoading) return <LoadingPage />;
@@ -83,15 +88,14 @@ export function QuotesPage() {
                       <p className="text-xs text-gray-500">Fecha {formatDate(quote.date)}</p>
                     </div>
                     <div className="flex gap-2 ml-3">
-                      <button className="text-red-500 hover:text-red-600">
+                      <button 
+                        onClick={() => handleDownloadPDF(quote)}
+                        className="text-red-500 hover:text-red-600 transition-colors"
+                        title="Descargar PDF"
+                      >
                         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
                           <path d="M8 10h8v2H8zm0 4h8v2H8z"/>
-                        </svg>
-                      </button>
-                      <button className="bg-green-500 hover:bg-green-600 text-white rounded-full p-1.5">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </button>
                     </div>

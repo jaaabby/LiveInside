@@ -54,8 +54,8 @@ export function FurnitureSidebar({
   };
 
   return (
-    <aside className="w-80 bg-white border border-gray-200 rounded-2xl overflow-y-auto shadow-lg">
-      <div className="flex flex-col gap-5 p-5">
+    <aside className="w-full md:w-80 bg-transparent md:bg-white md:border md:border-gray-200 md:rounded-2xl overflow-y-auto md:shadow-lg">
+      <div className="flex flex-col gap-5 p-0 md:p-5">
 
         {/* Muebles Personalizados de Carpeta */}
         {customFurniture.length > 0 && (
@@ -65,34 +65,36 @@ export function FurnitureSidebar({
             </h3>
             
             {/* Selector de Catálogos */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="grid grid-cols-2 gap-3 mb-5">
               {furnitureCatalogs.map((catalog) => {
                 const furnitureCount = getFurnitureByCatalog(catalog.id).length;
                 return (
                   <button
                     key={catalog.id}
                     onClick={() => setSelectedCatalog(catalog.id)}
-                    className={`px-3 py-3 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+                    className={`px-3 py-4 rounded-2xl text-xs font-semibold transition-all shadow-sm ${
                       selectedCatalog === catalog.id
-                        ? 'bg-white text-gray-700 border-2 border-primary-600 shadow-md scale-105'
-                        : 'bg-gray-50 text-gray-700 border-2 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+                        ? 'bg-white border-2 border-primary-600 shadow-md scale-[1.02]'
+                        : 'bg-white border-2 border-gray-200 hover:border-gray-300 hover:shadow-md'
                     }`}
                   >
-                    <div className="flex items-center justify-center mb-1.5 h-8">
+                    <div className="flex items-center justify-center mb-2 h-8">
                       <img 
                         src={catalog.logo} 
                         alt={catalog.name}
                         className={`max-h-full max-w-full object-contain ${catalog.id === 'easy' ? 'scale-125' : ''}`}
                       />
                     </div>
-                    <div className="text-xs opacity-80">({furnitureCount} muebles)</div>
+                    <div className={`text-xs font-medium ${selectedCatalog === catalog.id ? 'text-primary-600' : 'text-gray-600'}`}>
+                      {furnitureCount} muebles
+                    </div>
                   </button>
                 );
               })}
             </div>
 
             {/* Lista de Muebles del Catálogo Seleccionado */}
-            <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[50vh] md:max-h-64 overflow-y-auto pr-1">
               {getFurnitureByCatalog(selectedCatalog).map((furniture) => (
                 <button
                   key={furniture.id}
@@ -101,9 +103,9 @@ export function FurnitureSidebar({
                       onLoadFromUrl(furniture.path, furniture.name);
                     }
                   }}
-                  className="w-full bg-primary-50 border border-primary-200 rounded-lg p-3 transition-all hover:bg-primary-100 hover:border-primary-400 hover:shadow-md text-left flex items-center gap-3 cursor-pointer active:scale-95"
+                  className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 transition-all hover:border-primary-400 hover:shadow-lg text-left flex items-center gap-4 cursor-pointer active:scale-[0.98]"
                 >
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-white border border-gray-200 flex-shrink-0">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex-shrink-0 shadow-sm">
                     <img 
                       src={furniture.image} 
                       alt={furniture.name}
@@ -111,10 +113,10 @@ export function FurnitureSidebar({
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-gray-900 truncate">{furniture.name}</div>
-                    <div className="text-xs text-gray-600">Click para agregar</div>
+                    <div className="text-sm font-bold text-gray-900 truncate mb-0.5">{furniture.name}</div>
+                    <div className="text-xs text-gray-500">Toca para agregar</div>
                   </div>
-                  <div className="text-primary-600 font-bold text-2xl flex-shrink-0">+</div>
+                  <div className="text-primary-600 font-bold text-3xl flex-shrink-0 leading-none">+</div>
                 </button>
               ))}
             </div>
