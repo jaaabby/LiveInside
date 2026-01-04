@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { RoomSpace } from '@/data/roomSpaces';
 import type { CustomFurniture } from '@/data/customFurniture';
+import { furnitureCatalogs, getFurnitureByCatalog } from '@/data/customFurniture';
 
 interface FurnitureSidebarProps {
   furnitureCount: number;
@@ -32,6 +33,7 @@ export function FurnitureSidebar({
   onLoadRoom
 }: FurnitureSidebarProps) {
   const [wireframeMode, setWireframeMode] = useState(false);
+  const [selectedCatalog, setSelectedCatalog] = useState<string>('ikea');
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,54 +55,19 @@ export function FurnitureSidebar({
 
   return (
     <aside className="w-80 bg-[#151B3D]/60 backdrop-blur-xl border border-[#2D3561] rounded-2xl overflow-y-auto custom-scrollbar">
-      <div className="flex flex-col gap-6">
-        {/* Selector de Espacios 3D */}
-        <div className="p-6 border-b border-[#2D3561]">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
-            🏠 Selecciona un Espacio
-          </h3>
-          {!roomModelLoaded ? (
-            <div className="space-y-2">
-              {availableRooms.length > 0 ? (
-                availableRooms.map((room) => (
-                  <button
-                    key={room.id}
-                    onClick={() => onLoadRoom(room.path, room.id)}
-                    className="w-full bg-gradient-to-r from-[#00D4AA] to-[#00B894] hover:from-[#00B894] hover:to-[#00A07A] text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">🏠</span>
-                      <div className="text-left">
-                        <div className="text-sm">{room.name}</div>
-                        <div className="text-xs opacity-80">Click para cargar</div>
-                      </div>
-                    </div>
-                    <span className="text-xl">→</span>
-                  </button>
-                ))
-              ) : (
-                <div className="bg-[#FF4C6F]/10 border border-[#FF4C6F]/30 p-4 rounded-lg text-center">
-                  <div className="text-2xl mb-2">📦</div>
-                  <div className="text-xs text-gray-400">
-                    No hay espacios disponibles. Coloca archivos .glb en public/models/rooms/
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="w-full bg-[#00D4AA]/20 border-2 border-[#00D4AA] text-[#00D4AA] font-bold py-4 px-6 rounded-xl flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">✅</span>
-                <div className="text-left">
-                  <div className="text-sm">Espacio cargado</div>
-                  <div className="text-xs opacity-80">
-                    {availableRooms.find(r => r.id === selectedRoomId)?.name || 'Espacio actual'}
-                  </div>
-                </div>
+      <div className="flex flex-col gap-6 p-6">
+        {/* Espacio Cargado - Solo informativo */}
+        {roomModelLoaded && (
+          <div className="w-full bg-[#00D4AA]/20 border-2 border-[#00D4AA] text-[#00D4AA] font-bold py-4 px-6 rounded-xl flex items-center gap-3">
+            <span className="text-2xl">✅</span>
+            <div className="text-left">
+              <div className="text-sm">Espacio cargado</div>
+              <div className="text-xs opacity-80">
+                {availableRooms.find(r => r.id === selectedRoomId)?.name || 'Espacio actual'}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Muebles Personalizados de Carpeta */}
         {customFurniture.length > 0 && (
@@ -108,20 +75,54 @@ export function FurnitureSidebar({
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
               🪑 Catálogo de Muebles
             </h3>
+            
+            {/* Selector de Catálogos */}
+            <div className="flex gap-2 mb-3 flex-wrap">
+              {furnitureCatalogs.map((catalog) => {
+                const furnitureCount = getFurnitureByCatalog(catalog.id).length;
+                return (
+                  <button
+                    key={catalog.id}
+                    onClick={() => setSelectedCatalog(catalog.id)}
+                    className={`flex-1 min-w-[120px] px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+                      selectedCatalog === catalog.id
+                        ? 'bg-primary-600 text-white border-2 border-primary-600 shadow-lg'
+                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center mb-2 h-8">
+                      <img 
+                        src={catalog.logo} 
+                        alt={catalog.name}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+                    <div className="text-xs opacity-75">({furnitureCount} muebles)</div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Lista de Muebles del Catálogo Seleccionado */}
             <div className="space-y-2">
-              {customFurniture.map((furniture) => (
-                <button
+              {getFurnitureByCatalog(selectedCatalog).map((furniture) => (
+                <div
                   key={furniture.id}
-                  onClick={() => onLoadFromUrl?.(furniture.path, furniture.name)}
-                  className="w-full bg-primary-100 border border-primary-300 rounded-lg p-3 transition-all hover:bg-primary-200 hover:border-primary-500 text-left flex items-center gap-3"
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('furnitureUrl', furniture.path);
+                    e.dataTransfer.setData('furnitureName', furniture.name);
+                    e.dataTransfer.effectAllowed = 'copy';
+                  }}
+                  className="w-full bg-primary-100 border border-primary-300 rounded-lg p-3 transition-all hover:bg-primary-200 hover:border-primary-500 text-left flex items-center gap-3 cursor-grab active:cursor-grabbing"
                 >
                   <div className="text-2xl">{furniture.icon || '🪑'}</div>
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-900">{furniture.name}</div>
-                    <div className="text-xs text-gray-500">Modelo 3D</div>
+                    <div className="text-xs text-gray-500">Arrastra a la escena</div>
                   </div>
-                  <div className="text-primary-600 font-bold text-xl">+</div>
-                </button>
+                  <div className="text-primary-600 font-bold text-xl">⋮⋮</div>
+                </div>
               ))}
             </div>
           </div>

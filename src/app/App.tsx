@@ -69,6 +69,14 @@ export function App() {
           }
         />
         <Route
+          path="/virtual-tour"
+          element={
+            <PrivateRoute>
+              <VirtualTourPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/catalogs"
           element={
             <PrivateRoute>

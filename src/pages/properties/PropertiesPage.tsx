@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/services/api';
 import type { Property } from '@/types';
 import { formatDate } from '@/utils/helpers';
+import { availableRooms } from '@/data/roomSpaces';
 
 export function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -22,8 +23,22 @@ export function PropertiesPage() {
 
   const loadProperties = async () => {
     try {
-      const data = await api.properties.getAll();
-      setProperties(data);
+      // Crear propiedades basadas en espacios disponibles
+      const spacesAsProperties: Property[] = availableRooms.map((room, index) => ({
+        id: room.id,
+        name: room.name,
+        address: `Espacio ${index + 1} - Demo`,
+        city: 'Santiago',
+        region: 'Metropolitana',
+        country: 'Chile',
+        images: [room.thumbnail || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
+        status: 'active' as const,
+        visits: 0,
+        createdAt: new Date().toISOString(),
+        roomModelPath: room.path,
+        roomModelId: room.id
+      }));
+      setProperties(spacesAsProperties);
     } finally {
       setIsLoading(false);
     }
@@ -56,44 +71,27 @@ export function PropertiesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             }
-            title="No tienes propiedades"
-            description="Comienza agregando tu primera propiedad"
-            action={{
-              label: '+ Nueva propiedad',
-              onClick: () => setIsModalOpen(true),
-            }}
+            title="No hay espacios disponibles"
+            description="Coloca archivos .glb en public/models/rooms/"
           />
         ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Desktop Add Property Button - First in grid */}
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="hidden md:flex bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 hover:border-primary-500 hover:bg-primary-50/50 transition-colors flex-col items-center justify-center gap-3 min-h-[280px]"
-              >
-                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span className="text-primary-600 font-semibold">AGREGAR UNA PROPIEDAD</span>
-              </button>
-
-              {/* Property Cards */}
-              {properties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </div>
-
-            {/* Floating Action Button for mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Desktop Add Space Button */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="md:hidden fixed bottom-20 right-4 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-medium transition-colors z-40"
+              className="hidden md:flex bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 hover:border-primary-500 hover:bg-primary-50/50 transition-colors flex-col items-center justify-center gap-3 min-h-[280px]"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Nueva propiedad
+              <span className="text-primary-600 font-semibold">AGREGAR UN ESPACIO</span>
             </button>
-          </>
+
+            {/* Property Cards (from spaces) */}
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
         )}
       </div>
 
@@ -236,11 +234,19 @@ function PropertyCard({ property }: { property: Property }) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative">
       <div onClick={() => navigate(`/properties/${property.id}`)}>
         <div className="aspect-[4/3] overflow-hidden">
-          <img
-            src={property.images[0]}
-            alt={property.name}
-            className="w-full h-full object-cover"
-          />
+          {property.roomModelPath ? (
+            <div className="w-full h-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+              <svg className="w-24 h-24 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+          ) : (
+            <img
+              src={property.images[0]}
+              alt={property.name}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         <div className="p-4">
           <div className="flex items-start justify-between mb-1">

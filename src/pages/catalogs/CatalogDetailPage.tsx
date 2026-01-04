@@ -65,52 +65,6 @@ export function CatalogDetailPage() {
           </div>
         )}
 
-        {/* Categories */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            <div className="flex flex-col items-center gap-2 min-w-[80px]">
-              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                </svg>
-              </div>
-              <span className="text-xs text-center text-gray-600">Almacenamiento y organización</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[80px]">
-              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <span className="text-xs text-center text-gray-600">Sofás y sillones</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[80px]">
-              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </div>
-              <span className="text-xs text-center text-gray-600">Sillas y mesas</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[80px]">
-              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <span className="text-xs text-center text-gray-600">Escritorios y sillas de escritorio</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[80px]">
-              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <span className="text-xs text-center text-gray-600">Camas y colchones</span>
-            </div>
-          </div>
-        </div>
-
         {/* Products Section */}
         <div className="p-4">
           <h2 className="text-sm font-semibold mb-3">Mesas de centro con espacio extra para el orden</h2>
@@ -161,36 +115,6 @@ export function CatalogDetailPage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Inspirations Section */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=300" alt="Home Office" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Home Office</p>
-            </div>
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556912167-f556f1f39fdf?w=300" alt="Espacios infantiles" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Espacios infantiles</p>
-            </div>
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556912998-c57cc6b63cd7?w=300" alt="Dormitorios" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Dormitorios</p>
-            </div>
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=300" alt="Living" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Living</p>
-            </div>
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=300" alt="Comedores" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Comedores</p>
-            </div>
-            <div className="min-w-[120px] flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300" alt="Baños grises" className="w-full h-20 object-cover rounded-lg mb-2" />
-              <p className="text-xs text-center font-medium">Baños grises</p>
-            </div>
           </div>
         </div>
       </div>

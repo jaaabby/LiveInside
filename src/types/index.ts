@@ -30,6 +30,8 @@ export interface Property {
   status: 'active' | 'inactive' | 'rented';
   visits?: number;
   createdAt: string;
+  roomModelPath?: string; // Ruta al modelo 3D del espacio
+  roomModelId?: string; // ID del espacio 3D
 }
 
 export interface Product {

@@ -1,19 +1,55 @@
-import { useState, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { ThreeScene, ThreeSceneHandle } from '@/components/three/ThreeScene';
 import { FurnitureSidebar } from '@/components/three/FurnitureSidebar';
 import { availableRooms } from '@/data/roomSpaces';
 import { availableFurniture } from '@/data/customFurniture';
+import { api } from '@/services/api';
 
 export function VirtualTourPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [furnitureCount, setFurnitureCount] = useState(0);
   const [selectedFurniture, setSelectedFurniture] = useState<string | null>(null);
   const [roomModelLoaded, setRoomModelLoaded] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<string>('');
   const threeSceneRef = useRef<ThreeSceneHandle>(null);
+
+  useEffect(() => {
+    // Verificar si viene un roomId directo por URL
+    const roomIdParam = searchParams.get('roomId');
+    
+    if (roomIdParam) {
+      // Cargar espacio directamente desde parámetro
+      const room = availableRooms.find(r => r.id === roomIdParam);
+      if (room) {
+        threeSceneRef.current?.loadRoomModel(room.path);
+        setRoomModelLoaded(true);
+        setSelectedRoomId(room.id);
+      }
+      return;
+    }
+
+    // Si no hay roomId, intentar cargar desde la propiedad
+    const loadPropertyRoom = async () => {
+      if (!id) return;
+      
+      try {
+        const property = await api.properties.getById(id);
+        if (property.roomModelPath && property.roomModelId) {
+          threeSceneRef.current?.loadRoomModel(property.roomModelPath);
+          setRoomModelLoaded(true);
+          setSelectedRoomId(property.roomModelId);
+        }
+      } catch (error) {
+        console.error('Error loading property room:', error);
+      }
+    };
+
+    loadPropertyRoom();
+  }, [id, searchParams]);
 
   const handleLoadRoom = (roomPath: string, roomId: string) => {
     threeSceneRef.current?.loadRoomModel(roomPath);
@@ -29,7 +65,7 @@ export function VirtualTourPage() {
           {/* Left: Back button and Logo */}
           <div className="flex items-center gap-6">
             <button
-              onClick={() => navigate(`/properties/${id}`)}
+              onClick={() => navigate(id ? `/properties/${id}` : '/properties')}
               className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />

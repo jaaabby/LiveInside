@@ -1,18 +1,38 @@
 import type { Property, Product, Quote } from '@/types';
 import { mockProperties, mockProducts, mockQuotes, mockCatalogs, mockAnalytics, mockPlans } from '@/mocks/data';
+import { availableRooms } from '@/data/roomSpaces';
 
 // Simulate API delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Crear propiedades desde espacios disponibles
+const createPropertiesFromSpaces = (): Property[] => {
+  return availableRooms.map((room, index) => ({
+    id: room.id,
+    name: room.name,
+    address: `Espacio ${index + 1} - Demo`,
+    city: 'Santiago',
+    region: 'Metropolitana',
+    country: 'Chile',
+    images: [room.thumbnail || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
+    status: 'active' as const,
+    visits: 0,
+    createdAt: new Date().toISOString(),
+    roomModelPath: room.path,
+    roomModelId: room.id
+  }));
+};
 
 export const api = {
   properties: {
     getAll: async (): Promise<Property[]> => {
       await delay(500);
-      return mockProperties;
+      return createPropertiesFromSpaces();
     },
     getById: async (id: string): Promise<Property | undefined> => {
       await delay(300);
-      return mockProperties.find((p) => p.id === id);
+      const properties = createPropertiesFromSpaces();
+      return properties.find((p) => p.id === id);
     },
     create: async (property: Omit<Property, 'id' | 'createdAt'>): Promise<Property> => {
       await delay(800);
