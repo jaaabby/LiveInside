@@ -3,6 +3,7 @@ export interface CustomFurniture {
   id: string;
   name: string;
   path: string;
+  image: string; // Ruta a la imagen del mueble
   icon?: string;
   catalog: string; // Catálogo/Retailer al que pertenece
 }
@@ -16,117 +17,155 @@ export interface FurnitureCatalog {
 
 // Catálogos disponibles
 export const furnitureCatalogs: FurnitureCatalog[] = [
-  { id: 'ikea', name: 'IKEA', icon: '🔵', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Ikea_logo.svg/320px-Ikea_logo.svg.png' },
-  { id: 'sodimac', name: 'Sodimac', icon: '🟠', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Logo_Sodimac.svg/320px-Logo_Sodimac.svg.png' },
-  { id: 'casaideas', name: 'CasaIdeas', icon: '🟢', logo: 'https://www.casaideas.cl/img/Logo_Casa_Ideas.png' },
-  { id: 'easy', name: 'Easy', icon: '🟣', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Easy_Logo.svg/320px-Easy_Logo.svg.png' }
+  { id: 'ikea', name: 'IKEA', icon: '🔵', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Ikea_logo.svg' },
+  { id: 'sodimac', name: 'Sodimac', icon: '🟠', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Logotipo_Sodimac.svg' },
+  { id: 'casaideas', name: 'CasaIdeas', icon: '🟢', logo: 'https://integridad-corporativa.s3.amazonaws.com:443/casaideas/public-read/o_1g4sg7nbk5tu1sre131vreq9trb.png' },
+  { id: 'easy', name: 'Easy', icon: '🟣', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Easy-Logo.svg'}
 ];
 
 // Esta lista será reemplazada por un escaneo dinámico de la carpeta
 export const availableFurniture: CustomFurniture[] = [
   // Catálogo IKEA
   {
-    id: 'sofa',
-    name: 'Sofá',
-    path: '/models/furniture/sofa.glb',
-    icon: '🛋️',
+    id: 'ikea-aire-acondicionado',
+    name: 'Aire Acondicionado',
+    path: '/models/furniture/IKEA/aire_acondicionado.glb',
+    image: '/models/furniture/IKEA/aire_acondicionado.jpeg',
+    icon: '❄️',
     catalog: 'ikea'
   },
   {
-    id: 'modular-sofa',
-    name: 'Sofá Modular Escandinavo',
-    path: '/models/furniture/uploads_files_6521001_Modular+Scandinavian+Sofa+Set+3D+Model.glb',
-    icon: '🛋️',
+    id: 'ikea-bed',
+    name: 'Cama',
+    path: '/models/furniture/IKEA/bed.glb',
+    image: '/models/furniture/IKEA/bed.jpeg',
+    icon: '🛏️',
     catalog: 'ikea'
   },
   {
-    id: 'mesa',
-    name: 'Mesa',
-    path: '/models/furniture/mesa.glb',
+    id: 'ikea-closet',
+    name: 'Closet',
+    path: '/models/furniture/IKEA/closet.glb',
+    image: '/models/furniture/IKEA/closet.jpeg',
+    icon: '🚪',
+    catalog: 'ikea'
+  },
+  {
+    id: 'ikea-lampara',
+    name: 'Lámpara',
+    path: '/models/furniture/IKEA/lampara.glb',
+    image: '/models/furniture/IKEA/lampara.jpeg',
+    icon: '💡',
+    catalog: 'ikea'
+  },
+  {
+    id: 'ikea-mesa-centro',
+    name: 'Mesa de Centro',
+    path: '/models/furniture/IKEA/mesa_centro.glb',
+    image: '/models/furniture/IKEA/mesa_centro.jpeg',
     icon: '🪑',
-    catalog: 'ikea'
-  },
-  {
-    id: 'silla',
-    name: 'Silla',
-    path: '/models/furniture/silla.glb',
-    icon: '💺',
     catalog: 'ikea'
   },
   
   // Catálogo Sodimac
   {
-    id: 'cama',
-    name: 'Cama',
-    path: '/models/furniture/cama.glb',
-    icon: '🛏️',
+    id: 'sodimac-puff',
+    name: 'Puff',
+    path: '/models/furniture/SODIMAC/puff.glb',
+    image: '/models/furniture/SODIMAC/puff.jpeg',
+    icon: '🪑',
     catalog: 'sodimac'
   },
   {
-    id: 'escritorio',
-    name: 'Escritorio',
-    path: '/models/furniture/escritorio.glb',
-    icon: '🖥️',
+    id: 'sodimac-scandinavian-sofa',
+    name: 'Sofá Escandinavo',
+    path: '/models/furniture/SODIMAC/scandinavian_sofa.glb',
+    image: '/models/furniture/SODIMAC/scandinavian_sofa.jpeg',
+    icon: '🛋️',
     catalog: 'sodimac'
   },
   {
-    id: 'estante-libros',
-    name: 'Estante de Libros',
-    path: '/models/furniture/estante_libros.glb',
-    icon: '📚',
+    id: 'sodimac-table-chair',
+    name: 'Mesa y Silla',
+    path: '/models/furniture/SODIMAC/table_chair_01.glb',
+    image: '/models/furniture/SODIMAC/table_chair_01.jpeg',
+    icon: '🪑',
     catalog: 'sodimac'
   },
   {
-    id: 'repisa',
-    name: 'Repisa',
-    path: '/models/furniture/repisa.glb',
-    icon: '📦',
+    id: 'sodimac-table-lamp',
+    name: 'Lámpara de Mesa Yves',
+    path: '/models/furniture/SODIMAC/Table_lampYves.gltf',
+    image: '/models/furniture/SODIMAC/Table_lampYves.jpeg',
+    icon: '💡',
     catalog: 'sodimac'
   },
   
   // Catálogo CasaIdeas
   {
-    id: 'wooden-armchair',
-    name: 'Sillón de Madera',
-    path: '/models/furniture/uploads_files_6515163_Wooden+Armchair+3D+Model.glb',
+    id: 'casaideas-black-leather-chair',
+    name: 'Silla de Cuero Negro',
+    path: '/models/furniture/CASAIDEAS/black_leather_chair.gltf',
+    image: '/models/furniture/CASAIDEAS/black_leather_chair.png',
     icon: '🪑',
     catalog: 'casaideas'
   },
   {
-    id: 'lampara',
-    name: 'Lámpara',
-    path: '/models/furniture/lampara.glb',
-    icon: '💡',
+    id: 'casaideas-tv',
+    name: 'TV',
+    path: '/models/furniture/CASAIDEAS/Tv.glb',
+    image: '/models/furniture/CASAIDEAS/Tv.jpeg',
+    icon: '📺',
     catalog: 'casaideas'
   },
   {
-    id: 'alfombra',
-    name: 'Alfombra',
-    path: '/models/furniture/alfombra.glb',
-    icon: '🧶',
+    id: 'casaideas-wall-plant',
+    name: 'Planta de Pared',
+    path: '/models/furniture/CASAIDEAS/wall_plant.glb',
+    image: '/models/furniture/CASAIDEAS/wall_plant.jpeg',
+    icon: '🪴',
+    catalog: 'casaideas'
+  },
+  {
+    id: 'casaideas-wooden-armchair',
+    name: 'Sillón de Madera',
+    path: '/models/furniture/CASAIDEAS/wooden_armchair.glb',
+    image: '/models/furniture/CASAIDEAS/wooden_armchair.jpeg',
+    icon: '🪑',
     catalog: 'casaideas'
   },
   
   // Catálogo Easy
   {
-    id: 'taburete',
-    name: 'Taburete',
-    path: '/models/furniture/taburete.glb',
+    id: 'easy-chair',
+    name: 'Silla',
+    path: '/models/furniture/EASY/chair.glb',
+    image: '/models/furniture/EASY/chair.jpeg',
     icon: '🪑',
     catalog: 'easy'
   },
   {
-    id: 'planta',
-    name: 'Planta',
-    path: '/models/furniture/planta.glb',
-    icon: '🪴',
+    id: 'easy-coffee-table',
+    name: 'Mesa de Café',
+    path: '/models/furniture/EASY/coffee_table.glb',
+    image: '/models/furniture/EASY/coffee_table.jpeg',
+    icon: '☕',
     catalog: 'easy'
   },
   {
-    id: 'bobesponja-peluche',
-    name: 'Bob Esponja Peluche',
-    path: '/models/furniture/bobesponja_peluche.glb',
-    icon: '🧸',
+    id: 'easy-dinen-set',
+    name: 'Juego de Comedor Blanco',
+    path: '/models/furniture/EASY/dinen_set_white.glb',
+    image: '/models/furniture/EASY/dinen_set_white.jpeg',
+    icon: '🍽️',
+    catalog: 'easy'
+  },
+  {
+    id: 'easy-furniture',
+    name: 'Mueble',
+    path: '/models/furniture/EASY/furniture.glb',
+    image: '/models/furniture/EASY/furniture.jpeg',
+    icon: '🪑',
     catalog: 'easy'
   }
 ];

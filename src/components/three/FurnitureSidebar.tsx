@@ -54,112 +54,92 @@ export function FurnitureSidebar({
   };
 
   return (
-    <aside className="w-80 bg-[#151B3D]/60 backdrop-blur-xl border border-[#2D3561] rounded-2xl overflow-y-auto custom-scrollbar">
-      <div className="flex flex-col gap-6 p-6">
-        {/* Espacio Cargado - Solo informativo */}
-        {roomModelLoaded && (
-          <div className="w-full bg-[#00D4AA]/20 border-2 border-[#00D4AA] text-[#00D4AA] font-bold py-4 px-6 rounded-xl flex items-center gap-3">
-            <span className="text-2xl">✅</span>
-            <div className="text-left">
-              <div className="text-sm">Espacio cargado</div>
-              <div className="text-xs opacity-80">
-                {availableRooms.find(r => r.id === selectedRoomId)?.name || 'Espacio actual'}
-              </div>
-            </div>
-          </div>
-        )}
+    <aside className="w-80 bg-white border border-gray-200 rounded-2xl overflow-y-auto shadow-lg">
+      <div className="flex flex-col gap-5 p-5">
 
         {/* Muebles Personalizados de Carpeta */}
         {customFurniture.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
-              🪑 Catálogo de Muebles
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 flex items-center gap-2">
+              <span className="text-base"></span> Catálogo de Muebles
             </h3>
             
             {/* Selector de Catálogos */}
-            <div className="flex gap-2 mb-3 flex-wrap">
+            <div className="grid grid-cols-2 gap-2 mb-4">
               {furnitureCatalogs.map((catalog) => {
                 const furnitureCount = getFurnitureByCatalog(catalog.id).length;
                 return (
                   <button
                     key={catalog.id}
                     onClick={() => setSelectedCatalog(catalog.id)}
-                    className={`flex-1 min-w-[120px] px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+                    className={`px-3 py-3 rounded-xl text-xs font-semibold transition-all shadow-sm ${
                       selectedCatalog === catalog.id
-                        ? 'bg-primary-600 text-white border-2 border-primary-600 shadow-lg'
-                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                        ? 'bg-white text-gray-700 border-2 border-primary-600 shadow-md scale-105'
+                        : 'bg-gray-50 text-gray-700 border-2 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
                     }`}
                   >
-                    <div className="flex items-center justify-center mb-2 h-8">
+                    <div className="flex items-center justify-center mb-1.5 h-8">
                       <img 
                         src={catalog.logo} 
                         alt={catalog.name}
-                        className="max-h-full max-w-full object-contain"
+                        className={`max-h-full max-w-full object-contain ${catalog.id === 'easy' ? 'scale-125' : ''}`}
                       />
                     </div>
-                    <div className="text-xs opacity-75">({furnitureCount} muebles)</div>
+                    <div className="text-xs opacity-80">({furnitureCount} muebles)</div>
                   </button>
                 );
               })}
             </div>
 
             {/* Lista de Muebles del Catálogo Seleccionado */}
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {getFurnitureByCatalog(selectedCatalog).map((furniture) => (
-                <div
+                <button
                   key={furniture.id}
-                  draggable
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData('furnitureUrl', furniture.path);
-                    e.dataTransfer.setData('furnitureName', furniture.name);
-                    e.dataTransfer.effectAllowed = 'copy';
+                  onClick={() => {
+                    if (onLoadFromUrl) {
+                      onLoadFromUrl(furniture.path, furniture.name);
+                    }
                   }}
-                  className="w-full bg-primary-100 border border-primary-300 rounded-lg p-3 transition-all hover:bg-primary-200 hover:border-primary-500 text-left flex items-center gap-3 cursor-grab active:cursor-grabbing"
+                  className="w-full bg-primary-50 border border-primary-200 rounded-lg p-3 transition-all hover:bg-primary-100 hover:border-primary-400 hover:shadow-md text-left flex items-center gap-3 cursor-pointer active:scale-95"
                 >
-                  <div className="text-2xl">{furniture.icon || '🪑'}</div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">{furniture.name}</div>
-                    <div className="text-xs text-gray-500">Arrastra a la escena</div>
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-white border border-gray-200 flex-shrink-0">
+                    <img 
+                      src={furniture.image} 
+                      alt={furniture.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="text-primary-600 font-bold text-xl">⋮⋮</div>
-                </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 truncate">{furniture.name}</div>
+                    <div className="text-xs text-gray-600">Click para agregar</div>
+                  </div>
+                  <div className="text-primary-600 font-bold text-2xl flex-shrink-0">+</div>
+                </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Estadísticas */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
-            Estadísticas
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-primary-100 border border-gray-200 p-3 rounded-lg text-center">
-              <span className="text-2xl font-bold text-primary-600 block">{furnitureCount}</span>
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Muebles</span>
-            </div>
-            <div className="bg-primary-100 border border-gray-200 p-3 rounded-lg text-center">
-              <span className="text-2xl font-bold text-primary-600 block">✓</span>
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Habitación</span>
-            </div>
-          </div>
-        </div>
-
         {/* Controles */}
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-3">
             Controles
           </h3>
           <div className="flex flex-col gap-2">
             <button
               onClick={handleToggleWireframe}
-              className="bg-gray-100 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold transition-all hover:bg-gray-200 flex items-center justify-center gap-2"
+              className={`border-2 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-sm ${
+                wireframeMode 
+                  ? 'bg-primary-600 border-primary-600 text-white hover:bg-primary-700' 
+                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+              }`}
             >
-              🔲 Modo Wireframe
+              <span className="text-lg">☐</span> Modo Wireframe
             </button>
             <button 
               onClick={onClearFurniture}
-              className="bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
+              className="bg-red-500 hover:bg-red-600 border-2 border-red-500 text-white py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95"
             >
               🗑️ Limpiar Muebles
             </button>

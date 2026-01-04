@@ -38,7 +38,7 @@ export function VirtualTourPage() {
       
       try {
         const property = await api.properties.getById(id);
-        if (property.roomModelPath && property.roomModelId) {
+        if (property && property.roomModelPath && property.roomModelId) {
           threeSceneRef.current?.loadRoomModel(property.roomModelPath);
           setRoomModelLoaded(true);
           setSelectedRoomId(property.roomModelId);
@@ -58,18 +58,18 @@ export function VirtualTourPage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
       {/* Header */}
-      <header className="relative z-10 bg-primary-600 shadow-md">
+      <header className="relative z-10 bg-gradient-to-r from-primary-600 to-primary-700 shadow-lg">
         <div className="px-6 py-4 flex items-center justify-between">
           {/* Left: Back button and Logo */}
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate(id ? `/properties/${id}` : '/properties')}
-              className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
+              className="flex items-center gap-2 text-white hover:text-primary-100 transition-all hover:scale-105"
             >
               <ChevronLeft className="w-5 h-5" />
-              <span className="text-sm font-medium">Volver</span>
+              <span className="text-sm font-semibold">Volver</span>
             </button>
             
             <div className="flex items-center gap-3">
@@ -83,7 +83,9 @@ export function VirtualTourPage() {
 
           {/* Center: Title */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h1 className="text-2xl font-bold text-white">Visor 3D</h1>
+            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <span></span> Visor 3D
+            </h1>
           </div>
         </div>
       </header>
@@ -107,29 +109,24 @@ export function VirtualTourPage() {
         />
 
         {/* 3D Viewer */}
-        <div className="flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden relative shadow-sm">
+        <div className="flex-1 bg-white border-2 border-gray-200 rounded-2xl overflow-hidden relative shadow-xl">
           <ThreeScene
             ref={threeSceneRef}
             selectedFurniture={selectedFurniture}
             onFurnitureCountChange={setFurnitureCount}
           />
-          
-          {/* Overlay badge */}
-          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-            <span className="text-sm font-medium text-primary-600">🎨 Vista 3D Activa</span>
-          </div>
 
           {/* Instructions */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm px-6 py-3 rounded-xl border border-gray-200 shadow-lg max-w-3xl">
-            <p className="text-xs text-gray-600 text-center leading-relaxed">
-              <span className="text-primary-600 font-semibold">🖱️ Click + arrastrar:</span> Rotar cámara | 
-              <span className="text-primary-600 font-semibold"> 🔍 Rueda:</span> Zoom | 
-              <span className="text-primary-600 font-semibold"> 📦 Click mueble:</span> Seleccionar
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-6 py-4 rounded-2xl border-2 border-gray-200 shadow-2xl max-w-4xl">
+            <p className="text-xs text-gray-700 text-center leading-relaxed font-medium">
+              <span className="text-primary-600 font-bold">🖱️ Click + Arrastrar:</span> Rotar cámara |{' '}
+              <span className="text-primary-600 font-bold">🔍 Rueda:</span> Zoom |{' '}
+              <span className="text-primary-600 font-bold">📦 Click Mueble:</span> Agregar
               <br />
-              <span className="text-primary-700 font-semibold">⌨️ W/A/S/D o Flechas:</span> Mover | 
-              <span className="text-primary-700 font-semibold"> Q/E:</span> Rotar | 
-              <span className="text-primary-700 font-semibold"> +/-:</span> Escalar | 
-              <span className="text-red-600 font-semibold"> Delete:</span> Eliminar
+              <span className="text-primary-700 font-bold">⌨️ W/A/S/D:</span> Mover mueble |{' '}
+              <span className="text-primary-700 font-bold">Q/E:</span> Rotar |{' '}
+              <span className="text-primary-700 font-bold">+/-:</span> Escalar |{' '}
+              <span className="text-red-600 font-bold">Delete:</span> Eliminar
             </p>
           </div>
         </div>

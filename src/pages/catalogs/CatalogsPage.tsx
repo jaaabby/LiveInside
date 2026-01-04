@@ -58,7 +58,7 @@ export function CatalogsPage() {
                 <img
                   src={catalog.logo}
                   alt={catalog.name}
-                  className="max-w-full max-h-full object-contain"
+                  className={`max-w-full max-h-full object-contain ${catalog.name === 'Easy' ? 'scale-125' : ''}`}
                 />
               </div>
               <div className="p-3 text-center">
