@@ -47,6 +47,11 @@ const navItems = [
 
 export function BottomNav() {
   const location = useLocation();
+  
+  // Hide bottom nav on catalog and cart pages as they have custom navigation
+  if (location.pathname.startsWith('/catalogs') || location.pathname.startsWith('/cart')) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-bottom md:hidden z-40">

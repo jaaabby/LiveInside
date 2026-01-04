@@ -113,7 +113,7 @@ export function BrokerLoginPage() {
             <Button
               type="submit"
               variant="primary"
-              className="w-full bg-primary-600 hover:bg-primary-700"
+              className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl text-base font-medium"
               isLoading={isLoading}
             >
               Ingresar
@@ -121,29 +121,31 @@ export function BrokerLoginPage() {
           </form>
 
           {/* Register section */}
-          <div className="mt-6 text-center space-y-3">
-            <p className="text-gray-600 text-sm">¿No tienes una cuenta?</p>
+          <div className="mt-5 text-center">
+            <p className="text-gray-600 text-xs mb-3">¿No tienes una cuenta?</p>
             <Link to="/register?type=broker">
-              <Button variant="primary" className="w-full bg-blue-600 hover:bg-blue-700">
+              <Button variant="primary" className="bg-blue-500 hover:bg-blue-600 px-8 py-2 rounded-full text-sm font-medium">
                 Regístrate
               </Button>
             </Link>
           </div>
 
           {/* Divider */}
-          <div className="mt-6 mb-6 text-center">
-            <span className="text-gray-400 text-sm">o</span>
+          <div className="my-5 flex items-center justify-center gap-4">
+            <div className="h-px bg-gray-300 flex-1"></div>
+            <span className="text-gray-400 text-xs">o</span>
+            <div className="h-px bg-gray-300 flex-1"></div>
           </div>
 
           {/* Company code button */}
           <Link to="/register-company">
-            <Button variant="primary" className="w-full bg-blue-600 hover:bg-blue-700">
+            <Button variant="primary" className="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded-xl text-sm font-medium">
               Regístrate con código de empresa
             </Button>
           </Link>
 
-          <p className="text-center text-xs text-gray-500 mt-4">
-            Dirigido para personas de empresas. Usa el código que te dieron.
+          <p className="text-center text-xs text-gray-500 mt-3 px-4 leading-relaxed">
+            Registro para personal de empresa. Usa el código que te proporcionaron.
           </p>
         </div>
       </div>

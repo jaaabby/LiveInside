@@ -1,36 +1,34 @@
-import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface TopBarProps {
   title: string;
-  showBack?: boolean;
-  actions?: React.ReactNode;
+  subtitle?: string;
 }
 
-export function TopBar({ title, showBack, actions }: TopBarProps) {
-  const navigate = useNavigate();
+export function TopBar({ title, subtitle }: TopBarProps) {
+  const user = useAuthStore((state) => state.user);
 
   return (
-    <header className="sticky top-0 z-30 bg-gradient-to-r from-primary-600 to-primary-700 text-white safe-top">
-      <div className="flex items-center justify-between h-14 px-4">
+    <header className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+      <div>
+        <h1 className="text-3xl font-bold text-primary-700">{title}</h1>
+        {subtitle && <p className="text-sm text-primary-600 mt-1">{subtitle}</p>}
+      </div>
+      <div className="flex items-center gap-3">
+        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+          </svg>
+        </button>
         <div className="flex items-center gap-3">
-          {showBack && (
-            <button
-              onClick={() => navigate(-1)}
-              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
-              aria-label="Volver"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
-          <h1 className="text-lg font-semibold truncate">{title}</h1>
-        </div>
-        {actions && (
-          <div className="flex items-center gap-2">
-            {actions}
+          <div className="text-right">
+            <p className="text-sm font-semibold text-gray-900">{user?.name || 'Alexandra Navarro'}</p>
+            <p className="text-xs text-gray-500">Administrador</p>
           </div>
-        )}
+          <div className="w-11 h-11 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-base">
+            {user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'AN'}
+          </div>
+        </div>
       </div>
     </header>
   );

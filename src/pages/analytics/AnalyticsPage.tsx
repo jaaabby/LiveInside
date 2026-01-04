@@ -9,6 +9,7 @@ import type { AnalyticsData } from '@/types';
 export function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadAnalytics();
@@ -23,20 +24,161 @@ export function AnalyticsPage() {
     }
   };
 
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
   if (isLoading) return <LoadingPage />;
   if (!data) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopBar title="Analíticas" />
+      {/* Mobile Header */}
+      <header className="md:hidden bg-primary-600 px-4 py-4 flex items-center gap-3">
+        <img
+          src="/src/assets/images/logo_blanco_horizontal.png"
+          alt="LiveInside"
+          className="h-8"
+        />
+        <h1 className="text-white text-lg font-semibold">Analíticas</h1>
+      </header>
 
-      <div className="p-4 md:p-6 md:max-w-7xl md:mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Panel de Control</h1>
-          <p className="text-gray-600">Resumen de actividad y rendimiento</p>
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <TopBar title="Panel de Control" subtitle="Resumen de actividad y rendimiento" />
+      </div>
+
+      <div className="p-4 md:p-6 md:max-w-7xl md:mx-auto pb-24 md:pb-6">
+        {/* Mobile Dashboard Section */}
+        <div className="md:hidden mb-4">
+          <button 
+            onClick={() => toggleSection('dashboard')}
+            className="flex items-center justify-between w-full text-left font-semibold text-primary-600 text-base"
+          >
+            Dashboard
+            <svg className={`w-5 h-5 transition-transform ${openSections['dashboard'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {openSections['dashboard'] && (
+            <div className="mt-4 space-y-4">
+              {/* Top Product - Mobile */}
+              {data.topProduct && (
+                <Card>
+                  <CardBody>
+                    <h3 className="text-sm font-medium text-gray-900 mb-3">Mueble más seleccionado</h3>
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
+                        <img
+                          src={data.topProduct.image}
+                          alt={data.topProduct.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {data.topProduct.name}
+                        </h4>
+                        <p className="text-sm text-gray-600">{data.topProduct.sku}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {data.topProduct.views} visualizaciones
+                        </p>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              )}
+
+              {/* Visits Card - Mobile */}
+              <Card>
+                <CardBody>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Visitas totales</h3>
+                  <p className="text-4xl font-bold text-gray-900 mb-2">
+                    {data.totalVisits.toLocaleString()}
+                  </p>
+                  <p className="text-sm text-green-600 font-medium">
+                    +{data.visitsChange}% respecto al mes anterior
+                  </p>
+                </CardBody>
+              </Card>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mobile Behavior Analysis Section */}
+        <div className="md:hidden mb-6">
+          <button 
+            onClick={() => toggleSection('behavior')}
+            className="flex items-center justify-between w-full text-left font-semibold text-primary-600 text-base mb-4"
+          >
+            Análisis de comportamientos
+            <svg className={`w-5 h-5 transition-transform ${openSections['behavior'] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {openSections['behavior'] && (
+            <div className="space-y-4">
+              {/* Staging y catálogo */}
+              <div>
+                <h4 className="text-sm font-medium text-primary-500 mb-2">Staging y catálogo</h4>
+                <div className="space-y-2">
+                  <button className="w-full bg-white rounded-lg px-4 py-3 flex items-center justify-between text-left shadow-sm">
+                    <span className="text-sm text-gray-700">Muebles más seleccionados</span>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <button className="w-full bg-white rounded-lg px-4 py-3 flex items-center justify-between text-left shadow-sm">
+                    <span className="text-sm text-gray-700">Estilos y colores más aplicados</span>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Navegación y uso del tour */}
+              <div>
+                <h4 className="text-sm font-medium text-primary-500 mb-2">Navegación y uso del tour</h4>
+                <div className="space-y-2">
+                  <button className="w-full bg-white rounded-lg px-4 py-3 flex items-center justify-between text-left shadow-sm">
+                    <span className="text-sm text-gray-700">Funcionalidades más usadas</span>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <button className="w-full bg-white rounded-lg px-4 py-3 flex items-center justify-between text-left shadow-sm">
+                    <span className="text-sm text-gray-700">Tiempos de permanencia por habitación</span>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Sesiones compartidas */}
+              <div>
+                <h4 className="text-sm font-medium text-primary-500 mb-2">Sesiones compartidas</h4>
+                <button className="w-full bg-white rounded-lg px-4 py-3 flex items-center justify-between text-left shadow-sm">
+                  <span className="text-sm text-gray-700">Nº sesiones, participantes y acciones colaborativas</span>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Data Reports Section */}
+        <div className="md:hidden">
+          <h3 className="font-semibold text-primary-600 text-base mb-4">Informes de datos</h3>
+        </div>
+
+        {/* Desktop Grid Layout */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Visits Card */}
           <Card>
             <CardBody>
@@ -102,15 +244,24 @@ export function AnalyticsPage() {
           {data.recentProperties && data.recentProperties.length > 0 && (
             <Card className="md:col-span-3">
               <CardBody>
-                <h3 className="text-sm font-medium text-gray-600 mb-4">Propiedades Recientes</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">Propiedades Recientes</h3>
+                  <button className="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                    Nueva propiedad
+                  </button>
+                </div>
                 <div className="space-y-3">
                   {data.recentProperties.map((property) => (
                     <div
                       key={property.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
                     >
+                      <div className="w-20 h-20 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
+                        {/* Property image placeholder */}
+                        <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
+                      </div>
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{property.name}</h4>
+                        <h4 className="font-medium text-gray-900 mb-1">{property.name}</h4>
                         <p className="text-sm text-gray-500">{property.visits} visitas</p>
                       </div>
                       <span
@@ -123,10 +274,10 @@ export function AnalyticsPage() {
                         }`}
                       >
                         {property.status === 'active'
-                          ? 'Activa'
+                          ? 'Activo'
                           : property.status === 'inactive'
-                          ? 'Inactiva'
-                          : 'Rentada'}
+                          ? 'Inactivo'
+                          : 'Borrador'}
                       </span>
                     </div>
                   ))}
@@ -135,68 +286,8 @@ export function AnalyticsPage() {
             </Card>
           )}
         </div>
-
-        {/* Additional Sections */}
-        <div className="mt-6">
-          <Card>
-            <CardBody>
-              <h3 className="text-sm font-medium text-gray-600 mb-3">Análisis de comportamientos</h3>
-              <div className="space-y-2">
-                <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer p-3 hover:bg-gray-50 rounded-lg">
-                    <span className="font-medium text-gray-900">Staging y catalogado</span>
-                    <svg
-                      className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </summary>
-                  <div className="p-3 text-sm text-gray-600">
-                    Métricas de staging y catalogado de productos...
-                  </div>
-                </details>
-
-                <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer p-3 hover:bg-gray-50 rounded-lg">
-                    <span className="font-medium text-gray-900">Muebles más seleccionados</span>
-                    <svg
-                      className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </summary>
-                  <div className="p-3 text-sm text-gray-600">
-                    Productos más populares en visualizaciones...
-                  </div>
-                </details>
-
-                <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer p-3 hover:bg-gray-50 rounded-lg">
-                    <span className="font-medium text-gray-900">Estilos y colores más aplicados</span>
-                    <svg
-                      className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </summary>
-                  <div className="p-3 text-sm text-gray-600">
-                    Tendencias de diseño y colores preferidos...
-                  </div>
-                </details>
-              </div>
-            </CardBody>
-          </Card>
-        </div>
       </div>
     </div>
   );
 }
+

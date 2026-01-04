@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Tabs } from '@/components/ui/Tabs';
+import { WavesHeader } from '@/components/ui/WavesHeader';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 const individualSchema = z.object({
@@ -36,6 +37,8 @@ type CompanyForm = z.infer<typeof companySchema>;
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isBroker = searchParams.get('type') === 'broker';
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('individual');
@@ -84,64 +87,72 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-600 to-primary-700 flex flex-col safe-top safe-bottom">
-      <div className="p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white p-2"
-          aria-label="Volver"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-      </div>
+    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
+      {/* Purple waves at the top */}
+      <WavesHeader />
 
-      <div className="flex-1 px-6 pb-6">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">Crear Cuenta</h1>
-            <p className="text-white/90">Ingresa los datos</p>
+      {/* Back button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 z-20 text-white hover:text-white/80 transition-colors"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center px-6 pt-32 pb-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-primary-700 mb-2">Crear Cuenta</h1>
+            <p className="text-gray-600 text-sm">Ingresa los datos</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-6">
+          {isBroker ? (
+            <div>
             <Tabs
               tabs={[
                 {
                   id: 'individual',
                   label: 'Independiente',
                   content: (
-                    <form onSubmit={individualForm.handleSubmit(onSubmitIndividual)} className="space-y-4">
+                    <form onSubmit={individualForm.handleSubmit(onSubmitIndividual)} className="space-y-3.5">
                       <Input
                         {...individualForm.register('name')}
                         placeholder="Nombre"
                         error={individualForm.formState.errors.name?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...individualForm.register('lastName')}
                         placeholder="Apellidos"
                         error={individualForm.formState.errors.lastName?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...individualForm.register('email')}
                         type="email"
                         placeholder="Correo electrónico"
                         error={individualForm.formState.errors.email?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...individualForm.register('password')}
                         type="password"
                         placeholder="Crear contraseña"
                         error={individualForm.formState.errors.password?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...individualForm.register('confirmPassword')}
                         type="password"
                         placeholder="Confirmar contraseña"
                         error={individualForm.formState.errors.confirmPassword?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
 
-                      <div className="text-xs text-gray-600">
+                      <div className="text-[11px] text-gray-600 leading-tight">
                         <label className="flex items-start gap-2">
                           <input type="checkbox" className="mt-0.5" required />
                           <span>
@@ -157,17 +168,17 @@ export function RegisterPage() {
                       <Button
                         type="submit"
                         variant="primary"
-                        className="w-full"
+                        className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl text-base font-medium mt-4"
                         isLoading={isLoading}
                       >
                         Siguiente
                       </Button>
 
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600 mb-3">o regístrate con Google</p>
+                      <div className="text-center mt-4">
+                        <p className="text-xs text-gray-600 mb-3">o regístrate con Google</p>
                         <button
                           type="button"
-                          className="w-full bg-secondary-500 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-secondary-600 transition-colors flex items-center justify-center gap-2"
+                          className="w-full bg-blue-500 text-white px-4 py-3 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -176,12 +187,12 @@ export function RegisterPage() {
                         </button>
                       </div>
 
-                      <p className="text-center text-sm text-gray-600">
+                      <p className="text-center text-xs text-gray-600 mt-4">
                         ¿Ya tienes una cuenta?{' '}
                         <button
                           type="button"
                           onClick={() => navigate('/login')}
-                          className="text-primary-600 font-medium"
+                          className="text-primary-600 font-medium underline"
                         >
                           Ingresar
                         </button>
@@ -193,42 +204,42 @@ export function RegisterPage() {
                   id: 'company',
                   label: 'Empresa',
                   content: (
-                    <form onSubmit={companyForm.handleSubmit(onSubmitCompany)} className="space-y-4">
+                    <form onSubmit={companyForm.handleSubmit(onSubmitCompany)} className="space-y-3.5">
                       <Input
                         {...companyForm.register('companyName')}
                         placeholder="Nombre de la empresa"
                         error={companyForm.formState.errors.companyName?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...companyForm.register('companyRut')}
                         placeholder="Rut empresa"
                         error={companyForm.formState.errors.companyRut?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...companyForm.register('email')}
                         type="email"
                         placeholder="Correo electrónico"
                         error={companyForm.formState.errors.email?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...companyForm.register('password')}
                         type="password"
                         placeholder="Crear contraseña"
                         error={companyForm.formState.errors.password?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
                       <Input
                         {...companyForm.register('confirmPassword')}
                         type="password"
                         placeholder="Confirmar contraseña"
                         error={companyForm.formState.errors.confirmPassword?.message}
-                      />
-                      <Input
-                        {...companyForm.register('companyCode')}
-                        placeholder="Código de empresa"
-                        error={companyForm.formState.errors.companyCode?.message}
+                        className="bg-white border-2 border-purple-200 focus:border-primary-500"
                       />
 
-                      <div className="text-xs text-gray-600">
+                      <div className="text-[11px] text-gray-600 leading-tight">
                         <label className="flex items-start gap-2">
                           <input type="checkbox" className="mt-0.5" required />
                           <span>
@@ -244,17 +255,17 @@ export function RegisterPage() {
                       <Button
                         type="submit"
                         variant="primary"
-                        className="w-full"
+                        className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl text-base font-medium mt-4"
                         isLoading={isLoading}
                       >
                         Siguiente
                       </Button>
 
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600 mb-3">o regístrate con Google</p>
+                      <div className="text-center mt-4">
+                        <p className="text-xs text-gray-600 mb-3">o regístrate con Google</p>
                         <button
                           type="button"
-                          className="w-full bg-secondary-500 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-secondary-600 transition-colors flex items-center justify-center gap-2"
+                          className="w-full bg-blue-500 text-white px-4 py-3 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -263,12 +274,12 @@ export function RegisterPage() {
                         </button>
                       </div>
 
-                      <p className="text-center text-sm text-gray-600">
+                      <p className="text-center text-xs text-gray-600 mt-4">
                         ¿Ya tienes una cuenta?{' '}
                         <button
                           type="button"
                           onClick={() => navigate('/login')}
-                          className="text-primary-600 font-medium"
+                          className="text-primary-600 font-medium underline"
                         >
                           Ingresar
                         </button>
@@ -281,6 +292,89 @@ export function RegisterPage() {
               onChange={setActiveTab}
             />
           </div>
+          ) : (
+            <form onSubmit={individualForm.handleSubmit(onSubmitIndividual)} className="space-y-3.5">
+              <Input
+                {...individualForm.register('name')}
+                placeholder="Nombre"
+                error={individualForm.formState.errors.name?.message}
+                className="bg-white border-2 border-purple-200 focus:border-primary-500"
+              />
+              <Input
+                {...individualForm.register('lastName')}
+                placeholder="Apellidos"
+                error={individualForm.formState.errors.lastName?.message}
+                className="bg-white border-2 border-purple-200 focus:border-primary-500"
+              />
+              <Input
+                {...individualForm.register('email')}
+                type="email"
+                placeholder="Correo electrónico"
+                error={individualForm.formState.errors.email?.message}
+                className="bg-white border-2 border-purple-200 focus:border-primary-500"
+              />
+              <Input
+                {...individualForm.register('password')}
+                type="password"
+                placeholder="Crear contraseña"
+                error={individualForm.formState.errors.password?.message}
+                className="bg-white border-2 border-purple-200 focus:border-primary-500"
+              />
+              <Input
+                {...individualForm.register('confirmPassword')}
+                type="password"
+                placeholder="Confirmar contraseña"
+                error={individualForm.formState.errors.confirmPassword?.message}
+                className="bg-white border-2 border-purple-200 focus:border-primary-500"
+              />
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl text-base font-medium mt-4"
+                isLoading={isLoading}
+              >
+                Siguiente
+              </Button>
+
+              <div className="text-[11px] text-gray-600 leading-tight pt-2">
+                <label className="flex items-start gap-2">
+                  <input type="checkbox" className="mt-0.5" required />
+                  <span>
+                    Para continuar acepta nuestros{' '}
+                    <a href="#" className="text-primary-600 underline">
+                      términos & condiciones
+                    </a>{' '}
+                    y nuestras políticas de privacidad.
+                  </span>
+                </label>
+              </div>
+
+              <div className="text-center mt-4">
+                <p className="text-xs text-gray-600 mb-3">o regístrate con Google</p>
+                <button
+                  type="button"
+                  className="w-full bg-blue-500 text-white px-4 py-3 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  </svg>
+                  Regístrate con Google
+                </button>
+              </div>
+
+              <p className="text-center text-xs text-gray-600 mt-4">
+                ¿Ya tienes una cuenta?{' '}
+                <button
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="text-primary-600 font-medium underline"
+                >
+                  Ingresar
+                </button>
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>

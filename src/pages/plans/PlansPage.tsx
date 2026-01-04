@@ -31,46 +31,52 @@ export function PlansPage() {
   const currentPlan = user?.plan || 'starter';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-600 to-primary-700">
-      <TopBar title="Planes" showBack />
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-primary-600 px-4 py-4 flex items-center justify-between">
+        <button onClick={() => window.history.back()} className="text-white">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <img
+          src="/logo_blanco_horizontal.png"
+          alt="LiveInside"
+          className="h-8"
+        />
+        <div className="w-6" />
+      </header>
 
-      <div className="p-4 md:p-6 md:max-w-6xl md:mx-auto pb-20">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Elige tu plan</h1>
-          <p className="text-white/90">Selecciona el plan que mejor se adapte a tus necesidades</p>
-        </div>
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <TopBar title="Planes" />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="p-4 md:p-6 md:max-w-6xl md:mx-auto pb-24 md:pb-6">
+        <div className="space-y-4 md:grid md:grid-cols-3 md:gap-6 md:space-y-0">
           {plans.map((plan) => {
             const isCurrentPlan = currentPlan.toLowerCase() === plan.name.toLowerCase().replace('plan ', '');
             
             return (
-              <Card key={plan.id} className={`overflow-hidden ${isCurrentPlan ? 'ring-4 ring-primary-400' : ''}`}>
-                <div className={`p-6 ${isCurrentPlan ? 'bg-primary-50' : 'bg-white'}`}>
-                  {isCurrentPlan && (
-                    <div className="mb-3">
-                      <span className="inline-block px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-full">
-                        Tu plan actual
+              <Card key={plan.id} className={`overflow-hidden border-2 ${isCurrentPlan ? 'border-primary-400' : 'border-gray-200'}`}>
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {plan.name}
+                    </h3>
+                    <div className="text-right">
+                      <span className="text-lg font-bold text-gray-900">
+                        {formatCurrency(plan.price, plan.currency)}
                       </span>
+                      <span className="text-xs text-gray-500 ml-1">mensual</span>
                     </div>
-                  )}
-                  
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {plan.name}
-                  </h3>
-                  
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold text-gray-900">
-                      {formatCurrency(plan.price, plan.currency)}
-                    </span>
-                    <span className="text-gray-600 ml-2">mensual</span>
                   </div>
 
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-sm text-gray-500 mb-4">
                     Para {plan.userLimit === 1 ? '1 usuario' : `${plan.userLimit} usuarios`}
                   </p>
 
-                  <ul className="space-y-3 mb-6">
+                  <ul className="space-y-2 mb-4">
                     {plan.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
                         <svg
@@ -91,26 +97,24 @@ export function PlansPage() {
                     ))}
                   </ul>
 
-                  {isCurrentPlan ? (
-                    <Button variant="outline" className="w-full" disabled>
-                      Revisa tu plan
-                    </Button>
-                  ) : (
-                    <Button variant="primary" className="w-full">
-                      Obtener
-                    </Button>
+                  {isCurrentPlan && (
+                    <div className="mb-3">
+                      <span className="inline-block w-full text-center px-3 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg">
+                        Tu plan actual
+                      </span>
+                    </div>
                   )}
+
+                  <Button 
+                    variant={isCurrentPlan ? "outline" : "primary"} 
+                    className={`w-full ${isCurrentPlan ? 'bg-primary-100 text-primary-700 border-0' : 'bg-primary-600'}`}
+                  >
+                    {isCurrentPlan ? 'Revisa tu plan' : 'Obtener'}
+                  </Button>
                 </div>
               </Card>
             );
           })}
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-white/80 text-sm">
-            Todos los planes incluyen actualización de planta, inserción de muebles en tu tour,
-            personalización y analítica de datos.
-          </p>
         </div>
       </div>
     </div>

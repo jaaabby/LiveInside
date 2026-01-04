@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TopBar } from '@/components/layout/TopBar';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 export function AccountPage() {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
   const [isEditing, setIsEditing] = useState(false);
@@ -169,7 +171,10 @@ export function AccountPage() {
             </div>
 
             <div className="pt-4 border-t border-gray-200">
-              <button className="w-full text-primary-600 text-sm font-medium py-2 hover:bg-gray-50 rounded-lg transition-colors">
+              <button 
+                onClick={() => navigate('/plans')}
+                className="w-full text-primary-600 text-sm font-medium py-2 hover:bg-gray-50 rounded-lg transition-colors"
+              >
                 Más información sobre los diferentes planes
               </button>
               <button className="w-full text-red-600 text-sm font-medium py-2 hover:bg-red-50 rounded-lg transition-colors">

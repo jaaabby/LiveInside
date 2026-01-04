@@ -4,6 +4,7 @@ import { OnboardingPage } from '@/pages/auth/OnboardingPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { BrokerLoginPage } from '@/pages/auth/BrokerLoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { RegisterCompanyPage } from '@/pages/auth/RegisterCompanyPage';
 import { PropertiesPage } from '@/pages/properties/PropertiesPage';
 import { PropertyDetailPage } from '@/pages/properties/PropertyDetailPage';
 import { NewPropertyPage } from '@/pages/properties/NewPropertyPage';
@@ -30,6 +31,7 @@ export function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/broker-login" element={<BrokerLoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register-company" element={<RegisterCompanyPage />} />
 
       {/* Private Routes - With Layout */}
       <Route element={<AppLayout />}>
