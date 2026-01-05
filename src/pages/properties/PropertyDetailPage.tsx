@@ -55,67 +55,120 @@ export function PropertyDetailPage() {
       </div>
 
       {!showViewer ? (
-        <div className="relative">
-          <div className="aspect-[4/3] bg-gray-200 relative overflow-hidden">
-            <img
-              src={property.images[0]}
-              alt={property.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
-          </div>
-
-          <div className="p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900">{property.name}</h2>
-                <p className="text-gray-600">{property.address}</p>
-              </div>
-            </div>
-
-            {property.bedrooms && property.bathrooms && property.area && (
-              <div className="flex gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                  <span>{property.bedrooms} dorm</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-                  </svg>
-                  <span>{property.bathrooms} baños</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
-                  <span>{property.area} m²</span>
+        <div className="p-4 md:p-6 max-w-6xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* Image Section */}
+              <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[500px]">
+                <img
+                  src={property.images[0]}
+                  alt={property.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <span className="text-sm font-semibold text-primary-600">
+                    {property.status === 'active' ? 'Disponible' : 
+                     property.status === 'inactive' ? 'No Disponible' : 'Arrendada'}
+                  </span>
                 </div>
               </div>
-            )}
 
-            <div className="grid grid-cols-2 gap-3 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate(`/catalogs?propertyId=${id}`)}
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                Catálogos
-              </Button>
-              <Button 
-                variant="primary" 
-                onClick={() => navigate(`/properties/${id}/virtual-tour`)}
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                Tour Virtual 3D
-              </Button>
+              {/* Info Section */}
+              <div className="p-6 md:p-8 flex flex-col">
+                <div className="flex-1">
+                  {/* Property Title */}
+                  <div className="mb-6">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                      {property.name}
+                    </h1>
+                    <div className="flex items-start gap-2 text-gray-600">
+                      <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <p className="leading-relaxed">{property.address}</p>
+                    </div>
+                  </div>
+
+                  {/* Property Features */}
+                  {property.bedrooms && property.bathrooms && property.area && (
+                    <div className="mb-6 pb-6 border-b border-gray-200">
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        Características
+                      </h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                          <svg className="w-6 h-6 text-primary-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                          </svg>
+                          <span className="text-2xl font-bold text-gray-900">{property.bedrooms}</span>
+                          <span className="text-xs text-gray-600">Dormitorios</span>
+                        </div>
+                        <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                          <svg className="w-6 h-6 text-primary-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                          </svg>
+                          <span className="text-2xl font-bold text-gray-900">{property.bathrooms}</span>
+                          <span className="text-xs text-gray-600">Baños</span>
+                        </div>
+                        <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                          <svg className="w-6 h-6 text-primary-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                          </svg>
+                          <span className="text-2xl font-bold text-gray-900">{property.area}</span>
+                          <span className="text-xs text-gray-600">m²</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Description */}
+                  {property.description && (
+                    <div className="mb-6">
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        Descripción
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed">
+                        {property.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Spaces */}
+                  {property.spaces && property.spaces.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        Espacios
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {property.spaces.map((space, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1.5 bg-primary-50 text-primary-700 text-sm font-medium rounded-full"
+                          >
+                            {space}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-6 border-t border-gray-200">
+                  <Button 
+                    variant="primary" 
+                    className="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg shadow-primary-600/30"
+                    onClick={() => navigate(`/properties/${id}/virtual-tour`)}
+                  >
+                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Tour Virtual 3D
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/services/api';
 import type { Property } from '@/types';
 import { formatDate } from '@/utils/helpers';
-import { availableRooms } from '@/data/roomSpaces';
 
 export function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -23,22 +22,8 @@ export function PropertiesPage() {
 
   const loadProperties = async () => {
     try {
-      // Crear propiedades basadas en espacios disponibles
-      const spacesAsProperties: Property[] = availableRooms.map((room, index) => ({
-        id: room.id,
-        name: room.name,
-        address: `Espacio ${index + 1} - Demo`,
-        city: 'Santiago',
-        region: 'Metropolitana',
-        country: 'Chile',
-        images: [room.thumbnail || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
-        status: 'active' as const,
-        visits: 0,
-        createdAt: new Date().toISOString(),
-        roomModelPath: room.path,
-        roomModelId: room.id
-      }));
-      setProperties(spacesAsProperties);
+      const data = await api.properties.getAll();
+      setProperties(data);
     } finally {
       setIsLoading(false);
     }

@@ -13,14 +13,39 @@ export interface FurnitureCatalog {
   name: string;
   icon: string;
   logo: string; // Ruta al logo de la tienda
+  url: string; // URL de la tienda
 }
 
 // Catálogos disponibles
 export const furnitureCatalogs: FurnitureCatalog[] = [
-  { id: 'ikea', name: 'IKEA', icon: '🔵', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Ikea_logo.svg' },
-  { id: 'sodimac', name: 'Sodimac', icon: '🟠', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Logotipo_Sodimac.svg' },
-  { id: 'casaideas', name: 'CasaIdeas', icon: '🟢', logo: 'https://integridad-corporativa.s3.amazonaws.com:443/casaideas/public-read/o_1g4sg7nbk5tu1sre131vreq9trb.png' },
-  { id: 'easy', name: 'Easy', icon: '🟣', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Easy-Logo.svg'}
+  { 
+    id: 'ikea', 
+    name: 'IKEA', 
+    icon: '🔵', 
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Ikea_logo.svg',
+    url: 'https://www.ikea.com/cl/es/'
+  },
+  { 
+    id: 'sodimac', 
+    name: 'Sodimac', 
+    icon: '🟠', 
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Logotipo_Sodimac.svg',
+    url: 'https://www.sodimac.cl/'
+  },
+  { 
+    id: 'casaideas', 
+    name: 'CasaIdeas', 
+    icon: '🟢', 
+    logo: 'https://integridad-corporativa.s3.amazonaws.com:443/casaideas/public-read/o_1g4sg7nbk5tu1sre131vreq9trb.png',
+    url: 'https://www.casaideas.cl/'
+  },
+  { 
+    id: 'easy', 
+    name: 'Easy', 
+    icon: '🟣', 
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Easy-Logo.svg',
+    url: 'https://www.easy.cl/'
+  }
 ];
 
 // Esta lista será reemplazada por un escaneo dinámico de la carpeta

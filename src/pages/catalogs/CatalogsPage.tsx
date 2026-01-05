@@ -4,6 +4,7 @@ import { TopBar } from '@/components/layout/TopBar';
 import { Card } from '@/components/ui/Card';
 import { LoadingPage } from '@/components/ui/Loading';
 import { api } from '@/services/api';
+import { useCartStore } from '@/stores/useCartStore';
 import type { Catalog } from '@/types';
 
 export function CatalogsPage() {
@@ -11,6 +12,7 @@ export function CatalogsPage() {
   const [searchParams] = useSearchParams();
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { carts } = useCartStore();
 
   const propertyId = searchParams.get('propertyId');
 
@@ -83,25 +85,39 @@ export function CatalogsPage() {
       </div>
 
       {/* Custom Bottom Nav for catalogs page */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
-        <div className="grid grid-cols-2 h-16">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 shadow-lg">
+        <div className="grid grid-cols-3 h-16">
           <button
             onClick={() => navigate(propertyId ? `/catalogs?propertyId=${propertyId}` : '/catalogs')}
             className="flex flex-col items-center justify-center gap-1 text-primary-600"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             <span className="text-xs font-medium">Catálogos</span>
           </button>
           <button
             onClick={() => navigate(propertyId ? `/cart?propertyId=${propertyId}` : '/cart')}
-            className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-gray-900"
+            className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-gray-900 transition-colors relative"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span className="text-xs font-medium">Ver Carrito</span>
+            <span className="text-xs font-medium">Carrito</span>
+            {carts.reduce((total, cart) => total + cart.items.length, 0) > 0 && (
+              <div className="absolute top-1 right-1/4 w-5 h-5 bg-primary-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {carts.reduce((total, cart) => total + cart.items.length, 0)}
+              </div>
+            )}
+          </button>
+          <button
+            onClick={() => navigate('/quotes')}
+            className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="text-xs font-medium">Cotizaciones</span>
           </button>
         </div>
       </nav>

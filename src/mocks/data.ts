@@ -19,7 +19,9 @@ export const mockProperties: Property[] = [
     visits: 234,
     createdAt: '2024-10-29',
     roomModelPath: '/models/rooms/espacio1.glb',
-    roomModelId: 'espacio1'
+    roomModelId: 'espacio1',
+    description: 'Hermosa casa moderna ubicada en Limache Viejo, con acabados de primera calidad y amplios espacios. Perfecta para familias que buscan comodidad y estilo en un entorno tranquilo.',
+    spaces: ['Sala de estar', 'Cocina', 'Dormitorio principal', 'Dormitorio secundario', 'Baño completo']
   },
   {
     id: '2',
@@ -29,11 +31,16 @@ export const mockProperties: Property[] = [
     region: 'Metropolitana',
     country: 'Chile',
     images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800'],
+    bedrooms: 2,
+    bathrooms: 2,
+    area: 65,
     status: 'active',
     visits: 156,
     createdAt: '2024-10-29',
     roomModelPath: '/models/rooms/espacio2.glb',
-    roomModelId: 'espacio2'
+    roomModelId: 'espacio2',
+    description: 'Departamento contemporáneo con vista panorámica al parque. Cuenta con luminosos ambientes, cocina equipada y excelente conectividad con el centro de la ciudad.',
+    spaces: ['Living-comedor', 'Cocina americana', 'Dormitorio principal', 'Dormitorio de servicio', 'Terraza', 'Estacionamiento']
   },
   {
     id: '3',
@@ -49,6 +56,8 @@ export const mockProperties: Property[] = [
     status: 'active',
     visits: 89,
     createdAt: '2024-11-01',
+    description: 'Proyecto residencial innovador con diseño arquitectónico de vanguardia. Ofrece amplios espacios interiores, jardín privado y áreas comunes exclusivas para el disfrute familiar.',
+    spaces: ['Sala de estar', 'Comedor', 'Cocina', 'Dormitorio principal con vestidor', '2 Dormitorios secundarios', 'Jardín', 'Quincho']
   },
   {
     id: '4',
@@ -58,9 +67,14 @@ export const mockProperties: Property[] = [
     region: 'Valparaíso',
     country: 'Chile',
     images: ['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'],
+    bedrooms: 4,
+    bathrooms: 3,
+    area: 120,
     status: 'inactive',
     visits: 45,
     createdAt: '2024-10-15',
+    description: 'Elegante casa de estilo mediterráneo con amplios espacios y terminaciones premium. Ideal para quienes buscan tranquilidad y calidad de vida en un entorno natural privilegiado.',
+    spaces: ['Gran salón', 'Comedor formal', 'Cocina integral', 'Suite principal', '3 Dormitorios', 'Piscina', 'Bodega']
   },
   {
     id: '5',
@@ -70,9 +84,14 @@ export const mockProperties: Property[] = [
     region: 'Metropolitana',
     country: 'Chile',
     images: ['https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800'],
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 95,
     status: 'rented',
     visits: 178,
     createdAt: '2024-09-20',
+    description: 'Acogedora casa con diseño funcional y moderno. Cuenta con excelente iluminación natural, espacios bien distribuidos y un patio ideal para momentos al aire libre.',
+    spaces: ['Living', 'Comedor', 'Cocina equipada', 'Dormitorio principal', '2 Dormitorios', 'Patio techado', 'Lavadero']
   },
 ];
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { RoomSpace } from '@/data/roomSpaces';
 import type { CustomFurniture } from '@/data/customFurniture';
 import { furnitureCatalogs, getFurnitureByCatalog } from '@/data/customFurniture';
+import { mockProducts } from '@/mocks/data';
 
 interface FurnitureSidebarProps {
   furnitureCount: number;
@@ -14,7 +15,7 @@ interface FurnitureSidebarProps {
   onClearFurniture: () => void;
   onResetCamera: () => void;
   onToggleWireframe: () => void;
-  onLoadFromUrl?: (url: string, name: string) => void;
+  onLoadFromUrl?: (url: string, name: string, productData?: any) => void;
   onLoadRoom: (roomPath: string, roomId: string) => void;
 }
 
@@ -95,30 +96,46 @@ export function FurnitureSidebar({
 
             {/* Lista de Muebles del Catálogo Seleccionado */}
             <div className="space-y-3 max-h-[50vh] md:max-h-64 overflow-y-auto pr-1">
-              {getFurnitureByCatalog(selectedCatalog).map((furniture) => (
-                <button
-                  key={furniture.id}
-                  onClick={() => {
-                    if (onLoadFromUrl) {
-                      onLoadFromUrl(furniture.path, furniture.name);
-                    }
-                  }}
-                  className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 transition-all hover:border-primary-400 hover:shadow-lg text-left flex items-center gap-4 cursor-pointer active:scale-[0.98]"
-                >
-                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex-shrink-0 shadow-sm">
-                    <img 
-                      src={furniture.image} 
-                      alt={furniture.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-gray-900 truncate mb-0.5">{furniture.name}</div>
-                    <div className="text-xs text-gray-500">Toca para agregar</div>
-                  </div>
-                  <div className="text-primary-600 font-bold text-3xl flex-shrink-0 leading-none">+</div>
-                </button>
-              ))}
+              {getFurnitureByCatalog(selectedCatalog).map((furniture) => {
+                // Buscar el producto correspondiente en mockProducts
+                // Primero intentar por imagen exacta, luego por nombre
+                const product = mockProducts.find(p => 
+                  p.images?.[0] === furniture.image ||
+                  p.name.toLowerCase() === furniture.name.toLowerCase()
+                );
+                
+                // Debug: ver qué se está encontrando
+                if (furniture.name === 'Closet') {
+                  console.log('Closet furniture:', furniture);
+                  console.log('Found product:', product);
+                  console.log('Available products:', mockProducts.filter(p => p.name.toLowerCase().includes('closet')));
+                }
+                
+                return (
+                  <button
+                    key={furniture.id}
+                    onClick={() => {
+                      if (onLoadFromUrl) {
+                        onLoadFromUrl(furniture.path, furniture.name, product);
+                      }
+                    }}
+                    className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 transition-all hover:border-primary-400 hover:shadow-lg text-left flex items-center gap-4 cursor-pointer active:scale-[0.98]"
+                  >
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 flex-shrink-0 shadow-sm">
+                      <img 
+                        src={furniture.image} 
+                        alt={furniture.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-gray-900 truncate mb-0.5">{furniture.name}</div>
+                      <div className="text-xs text-gray-500">Toca para agregar</div>
+                    </div>
+                    <div className="text-primary-600 font-bold text-3xl flex-shrink-0 leading-none">+</div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

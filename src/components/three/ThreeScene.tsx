@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three-stdlib';
+import { useCartStore } from '@/stores/useCartStore';
+import { Modal } from '@/components/ui/Modal';
 
 interface ThreeSceneProps {
   selectedFurniture: string | null;
@@ -10,7 +12,7 @@ interface ThreeSceneProps {
 
 export interface ThreeSceneHandle {
   loadCustomFurniture: (file: File) => void;
-  loadFurnitureFromUrl: (url: string, name: string) => void;
+  loadFurnitureFromUrl: (url: string, name: string, productData?: any) => void;
   loadRoomModel: (path: string) => void;
   clearAllFurniture: () => void;
   resetCamera: () => void;
@@ -33,6 +35,14 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
   const isMovingFurnitureRef = useRef(false);
   const previousMousePosition = useRef({ x: 0, y: 0 });
   const placementIndicatorRef = useRef<THREE.Mesh | null>(null);
+  
+  // Estados para el panel de opciones del mueble
+  const [showFurnitureOptions, setShowFurnitureOptions] = useState(false);
+  const [selectedFurnitureData, setSelectedFurnitureData] = useState<any>(null);
+  const [showCartModal, setShowCartModal] = useState(false);
+  
+  // Store de carritos
+  const { carts, addItem } = useCartStore();
 
   // Helper function: raycast para encontrar la superficie debajo de un punto
   const getRaycastSurfacePosition = (mouse: THREE.Vector2, camera: THREE.PerspectiveCamera): { position: THREE.Vector3, normal: THREE.Vector3 } | null => {
@@ -220,7 +230,7 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
     );
   };
 
-  const loadFurnitureFromUrl = (url: string, name: string) => {
+  const loadFurnitureFromUrl = (url: string, name: string, productData?: any) => {
     if (!sceneRef.current) return;
 
     const loader = new GLTFLoader();
@@ -252,6 +262,11 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         model.userData.isSelectable = true;
         model.userData.scale = 1.0;
         model.userData.isFromCatalog = true;
+        
+        // Guardar datos adicionales del producto si están disponibles
+        if (productData) {
+          model.userData.productData = productData;
+        }
 
         model.traverse((child: any) => {
           if (child.isMesh) {
@@ -1217,6 +1232,20 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
           (child as any).material.emissiveIntensity = 0.3;
         }
       });
+      
+      // Mostrar panel de opciones con información del mueble
+      setSelectedFurnitureData({
+        name: furniture.userData.type || 'Mueble',
+        isCustom: furniture.userData.isCustom || false,
+        isFromCatalog: furniture.userData.isFromCatalog || false,
+        scale: furniture.userData.scale || 1.0,
+        position: {
+          x: furniture.position.x.toFixed(2),
+          y: furniture.position.y.toFixed(2),
+          z: furniture.position.z.toFixed(2)
+        }
+      });
+      setShowFurnitureOptions(true);
     }
   };
 
@@ -1228,6 +1257,58 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         }
       });
       selectedFurnitureRef.current = null;
+    }
+    setShowFurnitureOptions(false);
+    setSelectedFurnitureData(null);
+  };
+  
+  const handleDeleteFurniture = () => {
+    if (selectedFurnitureRef.current && sceneRef.current) {
+      sceneRef.current.remove(selectedFurnitureRef.current);
+      const index = furnitureObjectsRef.current.indexOf(selectedFurnitureRef.current);
+      if (index > -1) {
+        furnitureObjectsRef.current.splice(index, 1);
+      }
+      onFurnitureCountChange(furnitureObjectsRef.current.length);
+      deselectFurniture();
+    }
+  };
+  
+  const handleAddToCart = () => {
+    setShowCartModal(true);
+  };
+  
+  const handleCartSelection = (cartId: string) => {
+    if (selectedFurnitureData && selectedFurnitureRef.current) {
+      // Si el mueble tiene datos de producto guardados, usarlos
+      const productData = selectedFurnitureRef.current.userData.productData;
+      
+      const product = productData ? {
+        // Usar los datos reales del producto del catálogo
+        id: productData.id || `furniture-${Date.now()}`,
+        sku: productData.sku,
+        name: productData.name,
+        price: productData.price,
+        currency: productData.currency || 'CLP',
+        image: productData.image || productData.images?.[0],
+        images: productData.images,
+        catalog: productData.catalog || 'Catálogo',
+        catalogId: productData.catalogId
+      } : {
+        // Crear producto genérico para muebles personalizados
+        id: `furniture-${Date.now()}`,
+        sku: 'CUSTOM-' + Date.now(),
+        name: selectedFurnitureData.name,
+        price: 0,
+        currency: 'CLP',
+        image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
+        catalog: 'Personalizado',
+        catalogId: 'custom'
+      };
+      
+      addItem(cartId, product);
+      setShowCartModal(false);
+      setShowFurnitureOptions(false);
     }
   };
 
@@ -1245,6 +1326,114 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
           <p className="text-[#00D4AA] text-sm font-semibold">Cargando habitación escaneada...</p>
         </div>
       )}
+      
+      {/* Panel de opciones del mueble */}
+      {showFurnitureOptions && selectedFurnitureData && (
+        <div className="absolute top-4 right-4 bg-[#1A1F3A]/95 backdrop-blur-sm border border-[#2D3561] rounded-lg shadow-xl p-3 w-48 z-20">
+          <div className="mb-2">
+            <p className="text-white text-sm font-medium mb-1">{selectedFurnitureData.name}</p>
+            <p className="text-gray-400 text-[10px] font-mono">
+              {selectedFurnitureData.position.x}, {selectedFurnitureData.position.y}, {selectedFurnitureData.position.z}
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-[#4C6FFF] hover:bg-[#3D5CFF] text-white p-2 rounded transition-colors flex items-center justify-center"
+              title="Agregar al carrito"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={handleDeleteFurniture}
+              className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 p-2 rounded transition-colors flex items-center justify-center"
+              title="Eliminar"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={() => setShowFurnitureOptions(false)}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
+              title="Cerrar"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de selección de carrito */}
+      <Modal
+        isOpen={showCartModal}
+        onClose={() => setShowCartModal(false)}
+        title="Seleccionar carrito"
+      >
+        <div className="space-y-4 px-6 py-4">
+          <p className="text-sm text-gray-600">
+            ¿A qué carrito deseas agregar este mueble?
+          </p>
+          
+          {selectedFurnitureData && (
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="flex gap-4 items-center">
+                <div className="w-16 h-16 rounded bg-primary-100 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-500 font-semibold uppercase">
+                    {selectedFurnitureData.isFromCatalog ? 'De catálogo' : 'Personalizado'}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900">{selectedFurnitureData.name}</p>
+                  <p className="text-sm font-bold text-primary-600 mt-1">
+                    {selectedFurnitureData.isFromCatalog ? '$150.000' : 'Personalizado'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-3">Selecciona el cliente</p>
+            <div className="space-y-3">
+              {carts.map((cart) => (
+                <button
+                  key={cart.id}
+                  onClick={() => handleCartSelection(cart.id)}
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-200 transition-colors">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 text-base">{cart.clientName}</h3>
+                      <p className="text-sm text-gray-500">
+                        {cart.items.length === 0 ? 'Carrito vacío' : `${cart.items.length} ${cart.items.length === 1 ? 'producto' : 'productos'}`}
+                      </p>
+                    </div>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 });

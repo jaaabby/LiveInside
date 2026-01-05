@@ -32,6 +32,8 @@ export interface Property {
   createdAt: string;
   roomModelPath?: string; // Ruta al modelo 3D del espacio
   roomModelId?: string; // ID del espacio 3D
+  description?: string; // Descripción de la propiedad
+  spaces?: string[]; // Lista de espacios disponibles
 }
 
 export interface Product {
