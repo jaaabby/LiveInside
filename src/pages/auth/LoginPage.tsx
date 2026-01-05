@@ -70,7 +70,7 @@ export function LoginPage() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="mb-4">
               <img 
-                src="/src/assets/images/logo_color_vertical_LiveInside (4) (2).png" 
+                src="/images/logo_color_vertical_LiveInside (4) (2).png" 
                 alt="LiveInside Logo" 
                 className="w-28 h-auto mx-auto"
               />

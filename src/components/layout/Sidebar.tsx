@@ -81,7 +81,7 @@ export function Sidebar() {
       <div className="p-6 flex flex-col items-center">
         <div className="mb-3">
           <img 
-            src="/src/assets/images/logo_color_vertical_LiveInside (4) (2).png" 
+            src="/images/logo_color_vertical_LiveInside (4) (2).png" 
             alt="LiveInside Logo" 
             className="w-20 h-auto"
           />

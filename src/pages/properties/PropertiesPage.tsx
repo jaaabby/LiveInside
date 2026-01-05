@@ -34,7 +34,7 @@ export function PropertiesPage() {
       {/* Mobile Header */}
       <header className="md:hidden bg-primary-600 px-4 py-4 flex items-center gap-3">
         <img
-          src="/src/assets/images/logo_blanco_horizontal.png"
+          src="/images/logo_blanco_horizontal.png"
           alt="LiveInside"
           className="h-8"
         />

@@ -33,7 +33,7 @@ export const generateQuotePDF = async (quote: Quote) => {
   
   // Cargar y agregar logo centrado verticalmente
   try {
-    const logoBase64 = await loadImageAsBase64('/src/assets/images/logo_blanco_horizontal.png');
+    const logoBase64 = await loadImageAsBase64('/images/logo_blanco_horizontal.png');
     if (logoBase64) {
       // Logo más grande y mejor posicionado
       doc.addImage(logoBase64, 'PNG', 15, 12, 60, 24);

@@ -103,7 +103,7 @@ export function VirtualTourPage() {
           {/* Center: Logo and Title */}
           <div className="flex-1 flex items-center justify-center gap-3">
             <img
-              src="/src/assets/images/logo_blanco_horizontal.png"
+              src="/images/logo_blanco_horizontal.png"
               alt="LiveInside"
               className="h-7"
             />
