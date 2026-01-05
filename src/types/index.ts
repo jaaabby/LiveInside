@@ -87,11 +87,16 @@ export interface AnalyticsData {
     views: number;
   };
   topColors?: Array<{ color: string; count: number }>;
+  totalQuotes?: number;
   recentProperties?: Array<{
     id: string;
     name: string;
     visits: number;
     status: 'active' | 'inactive' | 'rented';
+    image?: string;
+    spaces?: string[];
+    bedrooms?: number;
+    bathrooms?: number;
   }>;
 }
 

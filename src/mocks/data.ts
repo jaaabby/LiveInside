@@ -340,9 +340,9 @@ export const mockAnalytics: AnalyticsData = {
   totalVisits: 1245,
   visitsChange: 18,
   topProduct: {
-    name: 'FJÄLLBO',
-    sku: 'Rack de TV, negro',
-    image: 'https://images.unsplash.com/photo-1594620302200-9a762244a156?w=400',
+    name: 'Sofá Escandinavo',
+    sku: 'SOFA-001',
+    image: '/models/furniture/SODIMAC/scandinavian_sofa.jpeg',
     views: 456,
   },
   topColors: [
@@ -350,24 +350,35 @@ export const mockAnalytics: AnalyticsData = {
     { color: 'Gris', count: 189 },
     { color: 'Blanco', count: 156 },
   ],
+  totalQuotes: 8,
   recentProperties: [
     {
       id: '1',
       name: 'Departamento Las Condes',
       visits: 234,
       status: 'active',
+      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400',
+      bedrooms: 2,
+      bathrooms: 2,
+      spaces: ['Living-comedor', 'Cocina', 'Dormitorio principal', 'Dormitorio secundario', 'Baño', 'Terraza'],
     },
     {
       id: '2',
       name: 'Casa Providencia',
       visits: 156,
       status: 'active',
+      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400',
+      bedrooms: 3,
+      bathrooms: 2,
+      spaces: ['Sala de estar', 'Cocina', 'Comedor', 'Dormitorio principal', '2 Dormitorios', 'Jardín'],
     },
     {
       id: '3',
       name: 'Oficina Huérfanos Las Condes',
       visits: 0,
       status: 'rented',
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400',
+      spaces: ['Recepción', 'Sala de reuniones', '3 Oficinas', 'Baño', 'Kitchenette'],
     },
   ],
 };
