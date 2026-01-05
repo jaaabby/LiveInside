@@ -660,6 +660,144 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
     canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('wheel', handleWheel, { passive: false });
 
+    // Touch controls for mobile devices
+    let lastTouchDistance = 0;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        // Single touch - select or start moving furniture
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const mouse = new THREE.Vector2();
+        mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, cameraRef.current!);
+
+        const intersects = raycaster.intersectObjects(furnitureObjectsRef.current, true);
+
+        if (intersects.length > 0) {
+          let furniture = intersects[0].object as any;
+          while (furniture.parent && !furniture.userData.isSelectable) {
+            furniture = furniture.parent;
+          }
+          if (furniture.userData.isSelectable) {
+            selectFurniture(furniture);
+            isMovingFurnitureRef.current = true;
+            lastTouchX = touch.clientX;
+            lastTouchY = touch.clientY;
+            return;
+          }
+        } else {
+          deselectFurniture();
+        }
+
+        isDraggingRef.current = true;
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+      } else if (e.touches.length === 2) {
+        // Two touches - prepare for pinch zoom
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+
+        if (isMovingFurnitureRef.current && selectedFurnitureRef.current) {
+          // Move furniture
+          const rect = canvas.getBoundingClientRect();
+          const mouse = new THREE.Vector2();
+          mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+          if (!cameraRef.current) return;
+
+          const surfaceData = getRaycastSurfacePosition(mouse, cameraRef.current);
+          
+          if (surfaceData) {
+            if (placementIndicatorRef.current) {
+              placementIndicatorRef.current.visible = true;
+              placementIndicatorRef.current.position.copy(surfaceData.position);
+              placementIndicatorRef.current.position.y += 0.01;
+            }
+            
+            placeObjectOnSurface(selectedFurnitureRef.current, surfaceData.position);
+          }
+        } else if (isDraggingRef.current && cameraRef.current) {
+          // Rotate camera
+          if (placementIndicatorRef.current) {
+            placementIndicatorRef.current.visible = false;
+          }
+          
+          const deltaX = touch.clientX - lastTouchX;
+          const deltaY = touch.clientY - lastTouchY;
+
+          const radius = Math.sqrt(
+            cameraRef.current.position.x ** 2 + 
+            cameraRef.current.position.z ** 2
+          );
+
+          const currentAngle = Math.atan2(cameraRef.current.position.z, cameraRef.current.position.x);
+          const newAngle = currentAngle - deltaX * 0.01;
+
+          cameraRef.current.position.x = radius * Math.cos(newAngle);
+          cameraRef.current.position.z = radius * Math.sin(newAngle);
+          cameraRef.current.position.y = Math.max(0.5, Math.min(5, cameraRef.current.position.y + deltaY * 0.01));
+
+          cameraRef.current.lookAt(0, 0, 0);
+        }
+
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+      } else if (e.touches.length === 2) {
+        // Pinch zoom
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (lastTouchDistance > 0 && cameraRef.current) {
+          const delta = lastTouchDistance - distance;
+          
+          const radius = Math.sqrt(
+            cameraRef.current.position.x ** 2 + 
+            cameraRef.current.position.z ** 2
+          );
+          const newRadius = Math.max(1, Math.min(10, radius + delta * 0.01));
+          const angle = Math.atan2(cameraRef.current.position.z, cameraRef.current.position.x);
+
+          cameraRef.current.position.x = newRadius * Math.cos(angle);
+          cameraRef.current.position.z = newRadius * Math.sin(angle);
+          cameraRef.current.lookAt(0, 0, 0);
+        }
+
+        lastTouchDistance = distance;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingRef.current = false;
+      isMovingFurnitureRef.current = false;
+      lastTouchDistance = 0;
+      
+      if (placementIndicatorRef.current) {
+        placementIndicatorRef.current.visible = false;
+      }
+    };
+
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd);
+    canvas.addEventListener('touchcancel', handleTouchEnd);
+
     // Drop event for furniture
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
@@ -804,6 +942,10 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseup', handleMouseUp);
       canvas.removeEventListener('wheel', handleWheel);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+      canvas.removeEventListener('touchcancel', handleTouchEnd);
       canvas.removeEventListener('drop', handleDrop);
       canvas.removeEventListener('dragover', handleDragOver);
       canvas.removeEventListener('dragleave', handleDragLeave);
