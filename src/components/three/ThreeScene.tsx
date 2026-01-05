@@ -233,6 +233,8 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
   const loadFurnitureFromUrl = (url: string, name: string, productData?: any) => {
     if (!sceneRef.current) return;
 
+    console.log('loadFurnitureFromUrl called with:', { url, name, productData });
+
     const loader = new GLTFLoader();
 
     loader.load(
@@ -266,6 +268,9 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         // Guardar datos adicionales del producto si están disponibles
         if (productData) {
           model.userData.productData = productData;
+          console.log('Product data saved to userData:', model.userData.productData);
+        } else {
+          console.log('No product data provided');
         }
 
         model.traverse((child: any) => {
@@ -1283,6 +1288,10 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
       // Si el mueble tiene datos de producto guardados, usarlos
       const productData = selectedFurnitureRef.current.userData.productData;
       
+      console.log('handleCartSelection - selectedFurnitureData:', selectedFurnitureData);
+      console.log('handleCartSelection - productData from userData:', productData);
+      console.log('handleCartSelection - full userData:', selectedFurnitureRef.current.userData);
+      
       const product = productData ? {
         // Usar los datos reales del producto del catálogo
         id: productData.id || `furniture-${Date.now()}`,
@@ -1305,6 +1314,8 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         catalog: 'Personalizado',
         catalogId: 'custom'
       };
+      
+      console.log('handleCartSelection - final product to add:', product);
       
       addItem(cartId, product);
       setShowCartModal(false);

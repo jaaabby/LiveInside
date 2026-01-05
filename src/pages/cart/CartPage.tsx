@@ -12,7 +12,7 @@ import { api } from '@/services/api';
 export function CartPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { carts, activeCartId, setActiveCart, getCartItems, updateQuantity, removeItem, clearCart, getTotal } = useCartStore();
+  const { carts, activeCartId, setActiveCart, updateQuantity, removeItem, clearCart, getTotal } = useCartStore();
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showCartSelector, setShowCartSelector] = useState(false);
   const [email, setEmail] = useState('');
@@ -260,7 +260,7 @@ export function CartPage() {
               <div className="flex gap-4">
                 <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                   <img
-                    src={item.product.images?.[0] || item.product.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400'}
+                    src={item.product.images?.[0] || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400'}
                     alt={item.product.name}
                     className="w-full h-full object-cover"
                   />

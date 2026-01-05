@@ -5,6 +5,7 @@ import { ThreeScene, ThreeSceneHandle } from '@/components/three/ThreeScene';
 import { FurnitureSidebar } from '@/components/three/FurnitureSidebar';
 import { availableRooms } from '@/data/roomSpaces';
 import { availableFurniture } from '@/data/customFurniture';
+import { mockProducts } from '@/mocks/data';
 import { api } from '@/services/api';
 
 export function VirtualTourPage() {
@@ -59,8 +60,30 @@ export function VirtualTourPage() {
   };
 
   const handleMobileFurnitureLoad = (url: string, name: string) => {
-    threeSceneRef.current?.loadFurnitureFromUrl(url, name);
+    // Buscar el producto correspondiente en mockProducts
+    const furnitureItem = availableFurniture.find(f => f.path === url);
+    const product = furnitureItem ? mockProducts.find(p => 
+      p.images?.[0] === furnitureItem.image ||
+      p.name.toLowerCase() === furnitureItem.name.toLowerCase()
+    ) : undefined;
+    
+    console.log('handleMobileFurnitureLoad:', { url, name, furnitureItem, product });
+    
+    threeSceneRef.current?.loadFurnitureFromUrl(url, name, product);
     setIsMobileMenuOpen(false); // Cerrar el menú al agregar un mueble
+  };
+
+  const handleLoadFurnitureWithProduct = (url: string, name: string) => {
+    // Buscar el producto correspondiente en mockProducts
+    const furnitureItem = availableFurniture.find(f => f.path === url);
+    const product = furnitureItem ? mockProducts.find(p => 
+      p.images?.[0] === furnitureItem.image ||
+      p.name.toLowerCase() === furnitureItem.name.toLowerCase()
+    ) : undefined;
+    
+    console.log('handleLoadFurnitureWithProduct:', { url, name, furnitureItem, product });
+    
+    threeSceneRef.current?.loadFurnitureFromUrl(url, name, product);
   };
 
   return (
@@ -107,7 +130,7 @@ export function VirtualTourPage() {
             onClearFurniture={() => threeSceneRef.current?.clearAllFurniture()}
             onResetCamera={() => threeSceneRef.current?.resetCamera()}
             onToggleWireframe={() => threeSceneRef.current?.toggleWireframe()}
-            onLoadFromUrl={(url, name) => threeSceneRef.current?.loadFurnitureFromUrl(url, name)}
+            onLoadFromUrl={handleLoadFurnitureWithProduct}
             onLoadRoom={handleLoadRoom}
           />
         </div>
