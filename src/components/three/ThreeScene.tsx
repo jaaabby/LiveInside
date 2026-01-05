@@ -1297,22 +1297,27 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         id: productData.id || `furniture-${Date.now()}`,
         sku: productData.sku,
         name: productData.name,
+        description: productData.description || '',
         price: productData.price,
         currency: productData.currency || 'CLP',
         image: productData.image || productData.images?.[0],
-        images: productData.images,
+        images: productData.images || [],
         catalog: productData.catalog || 'Catálogo',
-        catalogId: productData.catalogId
+        catalogId: productData.catalogId,
+        category: productData.category || 'Muebles'
       } : {
         // Crear producto genérico para muebles personalizados
         id: `furniture-${Date.now()}`,
         sku: 'CUSTOM-' + Date.now(),
         name: selectedFurnitureData.name,
+        description: 'Mueble personalizado',
         price: 0,
         currency: 'CLP',
         image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
+        images: [],
         catalog: 'Personalizado',
-        catalogId: 'custom'
+        catalogId: 'custom',
+        category: 'Personalizado'
       };
       
       console.log('handleCartSelection - final product to add:', product);

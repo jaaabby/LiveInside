@@ -55,7 +55,7 @@ export function NewPropertyPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopBar title="Nueva propiedad" showBack />
+      <TopBar title="Nueva propiedad" />
 
       <div className="p-4 md:p-6 md:max-w-2xl md:mx-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

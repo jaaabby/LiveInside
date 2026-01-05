@@ -71,13 +71,13 @@ export const api = {
         createdAt: new Date().toISOString(),
       };
     },
-    update: async (id: string, updates: Partial<Property>): Promise<Property> => {
+    update: async (_id: string, updates: Partial<Property>): Promise<Property> => {
       await delay(500);
-      const property = mockProperties.find((p) => p.id === id);
+      const property = mockProperties.find((p) => p.id === _id);
       if (!property) throw new Error('Property not found');
       return { ...property, ...updates };
     },
-    delete: async (id: string): Promise<void> => {
+    delete: async (_id: string): Promise<void> => {
       await delay(500);
     },
   },

@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string;
   type: 'broker' | 'buyer';
+  company?: string;
   companyName?: string;
   companyRut?: string;
   companyCode?: string;

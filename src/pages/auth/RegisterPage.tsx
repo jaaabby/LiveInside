@@ -41,7 +41,7 @@ export function RegisterPage() {
   const isBroker = searchParams.get('type') === 'broker';
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('individual');
+  const [_activeTab, setActiveTab] = useState('individual');
 
   const individualForm = useForm<IndividualForm>({
     resolver: zodResolver(individualSchema),

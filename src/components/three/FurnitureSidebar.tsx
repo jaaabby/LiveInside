@@ -20,34 +20,13 @@ interface FurnitureSidebarProps {
 }
 
 export function FurnitureSidebar({ 
-  furnitureCount,
-  roomModelLoaded,
-  selectedRoomId,
-  availableRooms,
   customFurniture,
-  onFurnitureSelect,
-  onLoadCustomFurniture,
   onClearFurniture,
-  onResetCamera,
   onToggleWireframe,
-  onLoadFromUrl,
-  onLoadRoom
+  onLoadFromUrl
 }: FurnitureSidebarProps) {
   const [wireframeMode, setWireframeMode] = useState(false);
   const [selectedCatalog, setSelectedCatalog] = useState<string>('ikea');
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.name.endsWith('.glb') || file.name.endsWith('.gltf')) {
-        onLoadCustomFurniture(file);
-      } else {
-        alert('Por favor selecciona un archivo .glb o .gltf');
-      }
-    }
-    // Reset input
-    e.target.value = '';
-  };
 
   const handleToggleWireframe = () => {
     setWireframeMode(!wireframeMode);

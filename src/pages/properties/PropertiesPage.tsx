@@ -5,8 +5,6 @@ import { Card } from '@/components/ui/Card';
 import { LoadingPage } from '@/components/ui/Loading';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
 import { api } from '@/services/api';
 import type { Property } from '@/types';
 import { formatDate } from '@/utils/helpers';
@@ -202,18 +200,6 @@ export function PropertiesPage() {
 function PropertyCard({ property }: { property: Property }) {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-
-  const statusColors = {
-    active: 'bg-green-100 text-green-700',
-    inactive: 'bg-gray-100 text-gray-700',
-    rented: 'bg-yellow-100 text-yellow-700',
-  };
-
-  const statusLabels = {
-    active: 'Activa',
-    inactive: 'Inactiva',
-    rented: 'Rentada',
-  };
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative">

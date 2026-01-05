@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/Card';
 import { LoadingPage } from '@/components/ui/Loading';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/services/api';
-import { formatCurrency, formatDate } from '@/utils/helpers';
+import { formatDate } from '@/utils/helpers';
 import { generateQuotePDF } from '@/utils/pdfGenerator';
 import type { Quote } from '@/types';
 
@@ -30,18 +30,6 @@ export function QuotesPage() {
   };
 
   if (isLoading) return <LoadingPage />;
-
-  const statusColors = {
-    draft: 'bg-gray-100 text-gray-700',
-    sent: 'bg-blue-100 text-blue-700',
-    completed: 'bg-green-100 text-green-700',
-  };
-
-  const statusLabels = {
-    draft: 'Borrador',
-    sent: 'Enviada',
-    completed: 'Completada',
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
