@@ -666,6 +666,8 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
     let lastTouchY = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
+      console.log('Touch start - touches:', e.touches.length);
+      
       if (e.touches.length === 1) {
         // Single touch - select or start moving furniture
         const touch = e.touches[0];
@@ -674,32 +676,49 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
 
+        if (!cameraRef.current) return;
+
         const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, cameraRef.current!);
+        raycaster.setFromCamera(mouse, cameraRef.current);
 
         const intersects = raycaster.intersectObjects(furnitureObjectsRef.current, true);
+        console.log('Furniture objects count:', furnitureObjectsRef.current.length);
+        console.log('Intersects:', intersects.length);
+
+        let furnitureSelected = false;
 
         if (intersects.length > 0) {
           let furniture = intersects[0].object as any;
+          console.log('Initial object:', furniture.type, furniture.userData);
+          
           while (furniture.parent && !furniture.userData.isSelectable) {
             furniture = furniture.parent;
+            console.log('Checking parent:', furniture.type, furniture.userData);
           }
+          
           if (furniture.userData.isSelectable) {
+            console.log('Furniture selected!');
+            e.preventDefault();
             selectFurniture(furniture);
             isMovingFurnitureRef.current = true;
+            furnitureSelected = true;
             lastTouchX = touch.clientX;
             lastTouchY = touch.clientY;
             return;
           }
-        } else {
-          deselectFurniture();
         }
 
-        isDraggingRef.current = true;
+        if (!furnitureSelected) {
+          console.log('No furniture selected, starting camera drag');
+          deselectFurniture();
+          isDraggingRef.current = true;
+        }
+
         lastTouchX = touch.clientX;
         lastTouchY = touch.clientY;
       } else if (e.touches.length === 2) {
         // Two touches - prepare for pinch zoom
+        e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
