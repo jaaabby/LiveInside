@@ -662,12 +662,11 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
 
     // Touch controls for mobile devices
     let lastTouchDistance = 0;
+    let lastTouchAngle = 0;
     let lastTouchX = 0;
     let lastTouchY = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
-      console.log('Touch start - touches:', e.touches.length);
-      
       if (e.touches.length === 1) {
         // Single touch - select or start moving furniture
         const touch = e.touches[0];
@@ -682,22 +681,17 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         raycaster.setFromCamera(mouse, cameraRef.current);
 
         const intersects = raycaster.intersectObjects(furnitureObjectsRef.current, true);
-        console.log('Furniture objects count:', furnitureObjectsRef.current.length);
-        console.log('Intersects:', intersects.length);
 
         let furnitureSelected = false;
 
         if (intersects.length > 0) {
           let furniture = intersects[0].object as any;
-          console.log('Initial object:', furniture.type, furniture.userData);
           
           while (furniture.parent && !furniture.userData.isSelectable) {
             furniture = furniture.parent;
-            console.log('Checking parent:', furniture.type, furniture.userData);
           }
           
           if (furniture.userData.isSelectable) {
-            console.log('Furniture selected!');
             e.preventDefault();
             selectFurniture(furniture);
             isMovingFurnitureRef.current = true;
@@ -709,7 +703,6 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         }
 
         if (!furnitureSelected) {
-          console.log('No furniture selected, starting camera drag');
           deselectFurniture();
           isDraggingRef.current = true;
         }
@@ -717,11 +710,12 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         lastTouchX = touch.clientX;
         lastTouchY = touch.clientY;
       } else if (e.touches.length === 2) {
-        // Two touches - prepare for pinch zoom
+        // Two touches - prepare for pinch zoom or furniture manipulation
         e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+        lastTouchAngle = Math.atan2(dy, dx);
       }
     };
 
@@ -778,12 +772,36 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
         lastTouchX = touch.clientX;
         lastTouchY = touch.clientY;
       } else if (e.touches.length === 2) {
-        // Pinch zoom
+        // Two finger gestures
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
 
-        if (lastTouchDistance > 0 && cameraRef.current) {
+        if (selectedFurnitureRef.current && lastTouchDistance > 0) {
+          // If a furniture is selected, use two fingers to scale and rotate it
+          
+          // Calculate scale change (pinch gesture)
+          const scaleDelta = (distance - lastTouchDistance) * 0.003;
+          const currentScale = selectedFurnitureRef.current.userData.scale || 1.0;
+          const newScale = Math.max(0.2, Math.min(3.0, currentScale + scaleDelta));
+          selectedFurnitureRef.current.userData.scale = newScale;
+          selectedFurnitureRef.current.scale.setScalar(newScale);
+          
+          // Calculate rotation change (twist gesture)
+          if (lastTouchAngle !== 0) {
+            const angleDelta = angle - lastTouchAngle;
+            // Only apply if the change is reasonable (avoid jumps)
+            if (Math.abs(angleDelta) < Math.PI / 2) {
+              selectedFurnitureRef.current.rotation.y += angleDelta;
+            }
+          }
+          
+          // Reposition on surface after scaling
+          placeObjectOnSurface(selectedFurnitureRef.current, selectedFurnitureRef.current.position);
+          
+        } else if (lastTouchDistance > 0 && cameraRef.current) {
+          // If no furniture selected, zoom camera
           const delta = lastTouchDistance - distance;
           
           const radius = Math.sqrt(
@@ -791,14 +809,15 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
             cameraRef.current.position.z ** 2
           );
           const newRadius = Math.max(1, Math.min(10, radius + delta * 0.01));
-          const angle = Math.atan2(cameraRef.current.position.z, cameraRef.current.position.x);
+          const cameraAngle = Math.atan2(cameraRef.current.position.z, cameraRef.current.position.x);
 
-          cameraRef.current.position.x = newRadius * Math.cos(angle);
-          cameraRef.current.position.z = newRadius * Math.sin(angle);
+          cameraRef.current.position.x = newRadius * Math.cos(cameraAngle);
+          cameraRef.current.position.z = newRadius * Math.sin(cameraAngle);
           cameraRef.current.lookAt(0, 0, 0);
         }
 
         lastTouchDistance = distance;
+        lastTouchAngle = angle;
       }
     };
 
@@ -806,6 +825,7 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
       isDraggingRef.current = false;
       isMovingFurnitureRef.current = false;
       lastTouchDistance = 0;
+      lastTouchAngle = 0;
       
       if (placementIndicatorRef.current) {
         placementIndicatorRef.current.visible = false;
