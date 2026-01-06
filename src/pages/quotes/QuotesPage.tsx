@@ -1,35 +1,17 @@
-import { useState, useEffect } from 'react';
 import { TopBar } from '@/components/layout/TopBar';
 import { Card } from '@/components/ui/Card';
-import { LoadingPage } from '@/components/ui/Loading';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { api } from '@/services/api';
+import { useQuoteStore } from '@/stores/useQuoteStore';
 import { formatDate } from '@/utils/helpers';
 import { generateQuotePDF } from '@/utils/pdfGenerator';
 import type { Quote } from '@/types';
 
 export function QuotesPage() {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadQuotes();
-  }, []);
-
-  const loadQuotes = async () => {
-    try {
-      const data = await api.quotes.getAll();
-      setQuotes(data);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { quotes } = useQuoteStore();
 
   const handleDownloadPDF = async (quote: Quote) => {
     await generateQuotePDF(quote);
   };
-
-  if (isLoading) return <LoadingPage />;
 
   return (
     <div className="min-h-screen bg-gray-50">

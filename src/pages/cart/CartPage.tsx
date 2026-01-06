@@ -6,13 +6,15 @@ import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useCartStore } from '@/stores/useCartStore';
+import { useQuoteStore } from '@/stores/useQuoteStore';
 import { formatCurrency } from '@/utils/helpers';
-import { api } from '@/services/api';
+import { generateQuotePDF } from '@/utils/pdfGenerator';
 
 export function CartPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { carts, activeCartId, setActiveCart, updateQuantity, removeItem, clearCart, getTotal } = useCartStore();
+  const { addQuote } = useQuoteStore();
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showCartSelector, setShowCartSelector] = useState(false);
   const [email, setEmail] = useState('');
@@ -26,13 +28,19 @@ export function CartPage() {
     if (!currentCart) return;
     setIsLoading(true);
     try {
-      await api.quotes.create({
+      // Crear cotización en el store local
+      const newQuote = addQuote({
         catalogName: `Carrito ${currentCart.clientName}`,
         items,
         total: getTotal(currentCart.id),
         currency: 'CLP',
         status: 'draft',
       });
+      
+      // Generar PDF automáticamente
+      await generateQuotePDF(newQuote);
+      
+      // Limpiar carrito y navegar a cotizaciones
       clearCart(currentCart.id);
       navigate('/quotes');
     } finally {
@@ -44,14 +52,21 @@ export function CartPage() {
     if (!email || !currentCart) return;
     setIsLoading(true);
     try {
-      const quote = await api.quotes.create({
+      // Crear cotización en el store local
+      const newQuote = addQuote({
         catalogName: `Carrito ${currentCart.clientName}`,
         items,
         total: getTotal(currentCart.id),
         currency: 'CLP',
         status: 'sent',
       });
-      await api.quotes.sendByEmail(quote.id, email);
+      
+      // Generar PDF
+      await generateQuotePDF(newQuote);
+      
+      // Simular envío de email
+      console.log(`Cotización enviada a: ${email}`);
+      
       setShowEmailModal(false);
       setEmail('');
       clearCart(currentCart.id);
