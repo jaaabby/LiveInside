@@ -40,7 +40,7 @@ export function OnboardingPage() {
           >
             <div className="w-full h-32 mb-2 bg-white rounded-xl flex items-center justify-center overflow-hidden">
               <img 
-                src="/src/assets/images/corredor.png" 
+                src="/images/corredor.png" 
                 alt="Corredor" 
                 className="w-auto h-full object-contain"
               />
@@ -56,7 +56,7 @@ export function OnboardingPage() {
           >
             <div className="w-full h-32 mb-2 bg-white rounded-xl flex items-center justify-center overflow-hidden">
               <img 
-                src="/src/assets/images/comprador.png" 
+                src="/images/comprador.png" 
                 alt="Comprador" 
                 className="w-auto h-full object-contain"
               />

@@ -34,13 +34,28 @@ export function CatalogsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <header className="md:hidden bg-primary-600 px-4 py-4 flex items-center gap-3">
-        <button onClick={() => navigate(propertyId ? `/properties/${propertyId}` : '/properties')} className="text-white">
+      <header className="md:hidden bg-primary-600 px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(propertyId ? `/properties/${propertyId}` : '/properties')} className="text-white">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-white text-lg font-semibold">Catálogos</h1>
+        </div>
+        <button
+          onClick={() => navigate(propertyId ? `/cart?propertyId=${propertyId}` : '/cart')}
+          className="text-white relative"
+        >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
+          {carts.reduce((total, cart) => total + cart.items.length, 0) > 0 && (
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {carts.reduce((total, cart) => total + cart.items.length, 0)}
+            </div>
+          )}
         </button>
-        <h1 className="text-white text-lg font-semibold">Catálogos</h1>
       </header>
 
       {/* Desktop Header */}
