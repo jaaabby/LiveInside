@@ -793,7 +793,7 @@ export const ThreeScene = forwardRef<ThreeSceneHandle, ThreeSceneProps>(({ onFur
             const angleDelta = angle - lastTouchAngle;
             // Only apply if the change is reasonable (avoid jumps)
             if (Math.abs(angleDelta) < Math.PI / 2) {
-              selectedFurnitureRef.current.rotation.y += angleDelta;
+              selectedFurnitureRef.current.rotation.y -= angleDelta;
             }
           }
           
